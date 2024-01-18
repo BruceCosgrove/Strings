@@ -38,7 +38,7 @@ public:
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     static constexpr size_type npos = std::numeric_limits<size_type>::max();
-    static constexpr value_type nult = value_type();
+    static constexpr value_type nult = value_type(); // Null Terminator
 
     static_assert(std::is_same_v<value_type, typename traits_type::char_type>, "Traits must have same value type.");
     static_assert(std::is_same_v<value_type, typename allocator_type::value_type>, "Allocator must have same value type.");
