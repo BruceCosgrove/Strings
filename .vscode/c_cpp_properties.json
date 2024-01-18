@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Ubuntu",
+            "includePath": [
+                "${workspaceFolder}/include/",
+                "${workspaceFolder}/test/src/"
+            ],
+            "compilerPath": "/usr/bin/g++-13",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
