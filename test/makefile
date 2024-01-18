@@ -6,8 +6,8 @@ OUT_NAME := test
 # To set directly, use "make cfg=debug" or "make cfg=release".
 cfg := debug
 
-# Configurations
-
+# The compiler flags to use.
+CXXFLAGS := -std=c++23 -Wall
 CXXFLAGS.debug := -g
 CXXFLAGS.release := -O2
 
@@ -37,8 +37,8 @@ EXE := $(OUT_DIR)$(OUT_NAME)
 
 # The compiler to use.
 COMPILER := g++-13
-# The compiler flags to use.
-CXXFLAGS := -std=c++23 -Wall $(CXXFLAGS.$(cfg))
+# Add the configuration-specific compiler flags.
+CXXFLAGS += $(CXXFLAGS.$(cfg))
 
 # Compile the executable.
 all: $(EXE) $(MAKEFILE)
