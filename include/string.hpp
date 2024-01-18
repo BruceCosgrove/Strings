@@ -54,7 +54,7 @@ public:
     constexpr basic_string(const basic_string& string)
         : _size(string._size)
     {
-        if (string.small())
+        if (_size <= _internal_capacity())
             _init_small();
         else
         {
