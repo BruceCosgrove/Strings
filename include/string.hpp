@@ -42,7 +42,6 @@ public:
 
     static_assert(std::is_same_v<value_type, typename traits_type::char_type>, "Traits must have same value type.");
     static_assert(std::is_same_v<value_type, typename allocator_type::value_type>, "Allocator must have same value type.");
-    static_assert(std::is_empty_v<allocator_type>, "Allocator must be stateless.");
 
 public:
     constexpr basic_string() noexcept
@@ -272,9 +271,9 @@ private:
         value_type _small_buffer[_internal_capacity() + 1]; // + 1 for null terminator.
         pointer _large_buffer;
     };
-    [[no_unique_address]] allocator_type _allocator;
     size_type _size;
     size_type _capacity;
+    [[no_unique_address]] allocator_type _allocator;
 };
 
 using string = basic_string<char, std::size_t>;
