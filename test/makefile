@@ -70,10 +70,15 @@ run: $(EXE)
 clear:
 	clear
 
-# Clears the terminal and recompiles everything.
+# Clears the terminal and compiles the necessary files.
 # If successful, also runs the test.
 .PHONY: crun
-crun: clean clear run
+crun: clear run
+
+# Clears the terminal and recompiles everything.
+# If successful, also runs the test.
+.PHONY: ccrun
+ccrun: clean clear run
 
 # Debugs the test.
 .PHONY: rund
