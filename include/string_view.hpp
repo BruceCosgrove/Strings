@@ -7,7 +7,7 @@
 template
 <
     typename _char_t,
-    typename _size_t,
+    typename _size_t = std::size_t,
     typename _traits_t = std::char_traits<_char_t>
 >
 class basic_string_view
@@ -91,11 +91,9 @@ public:
 
     constexpr std::strong_ordering operator<=>(basic_string_view view) const noexcept
     {
-        if (_size < view._size)
-            return std::strong_ordering::less;
-        if (_size > view._size)
-            return std::strong_ordering::greater;
-        return traits_type::compare(_data, view._data);
+        if (auto comparison = traits_type::compare(_data, view._data, std::min(_size, view._size)))
+            return comparison;
+        return ssize() - view.ssize();
     }
 
 public:
@@ -120,3 +118,11 @@ private:
 
 using string_view = basic_string_view<char, std::size_t>;
 using small_string_view = basic_string_view<char, std::uint8_t>;
+using u8string_view = basic_string_view<char8_t, std::size_t>;
+using small_u8string_view = basic_string_view<char8_t, std::uint8_t>;
+using u16string_view = basic_string_view<char16_t, std::size_t>;
+using small_u16string_view = basic_string_view<char16_t, std::uint8_t>;
+using u32string_view = basic_string_view<char32_t, std::size_t>;
+using small_u32string_view = basic_string_view<char32_t, std::uint8_t>;
+using wstring_view = basic_string_view<wchar_t, std::size_t>;
+using small_wstring_view = basic_string_view<wchar_t, std::uint8_t>;

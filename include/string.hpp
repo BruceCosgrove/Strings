@@ -2,15 +2,16 @@
 
 #include "string_view.hpp"
 #include <algorithm>
-#include <cstdint>
-#include <memory>
 #include <concepts>
+#include <cstdint>
+#include <limits>
+#include <memory>
 
 template
 <
     typename _char_t,
-    typename _size_t,
-    _size_t _min_internal_capacity = 15,
+    typename _size_t = std::size_t,
+    _size_t _min_internal_capacity = 15 / sizeof(_char_t),
     typename _traits_t = std::char_traits<_char_t>,
     typename _allocator_t = std::allocator<_char_t>
 >
@@ -122,7 +123,17 @@ public:
 public:
     constexpr size_type size() const noexcept { return _size; }
     constexpr ssize_type ssize() const noexcept { return static_cast<ssize_type>(_size); }
+    constexpr size_type length() const noexcept { return _size; }
     constexpr size_type capacity() const noexcept { return _capacity; }
+
+    constexpr size_type max_size() const noexcept
+    {
+        return std::min(
+            allocator_traits::max_size(_allocator),
+            std::numeric_limits<ssize_type>::max() / sizeof(value_type)
+        ) - 1;
+    }
+
     constexpr bool small() const noexcept { return _capacity <= _internal_capacity(); }
     constexpr bool empty() const noexcept { return _size == 0; }
 
@@ -145,6 +156,7 @@ public:
     // g++ still doesn't have "deducing this".
     constexpr const_pointer data() const noexcept { return _elements(); }
     constexpr const_pointer c_str() const noexcept { return _elements(); }
+    constexpr operator string_view_type() const noexcept { return {_elements(), _size}; }
 
 private:
     // Starts the string in large mode. Assumes initially not in either mode.
