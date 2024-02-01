@@ -59,9 +59,7 @@ public:
         else
         {
             _init_large();
-            auto allocation = _allocate(_size);
-            _large_buffer = allocation.elements;
-            _capacity = allocation.capacity;
+            _allocate_current(_size);
         }
         traits_type::copy(_elements(), string._elements(), _size);
         _eos();
@@ -87,22 +85,6 @@ public:
         string._eos();
     }
 
-    constexpr basic_string(const_pointer elements)
-        : _size(traits_type::length(elements))
-    {
-        if (_size <= _internal_capacity())
-            _init_small();
-        else
-        {
-            _init_large();
-            auto allocation = _allocate(_size);
-            _large_buffer = allocation.elements;
-            _capacity = allocation.capacity;
-        }
-        traits_type::copy(_elements(), elements, _size);
-        _eos();
-    }
-
     explicit constexpr basic_string(string_view_type view)
         : _size(view.size())
     {
@@ -111,50 +93,164 @@ public:
         else
         {
             _init_large();
-            auto allocation = _allocate(_size);
-            _large_buffer = allocation.elements;
-            _capacity = allocation.capacity;
+            _allocate_current(_size);
         }
         traits_type::copy(_elements(), view.data(), _size);
         _eos();
     }
 
+    constexpr basic_string(const_pointer elements)
+        : basic_string(string_view_type(elements))
+    {
+
+    }
+
+    constexpr basic_string& operator=(const basic_string& string)
+    {
+        if (this != std::addressof(string))
+        {
+            _size = string._size;
+            if (small())
+            {
+                if (!string.small())
+                {
+                    _become_large();
+                    _allocate_current(_size);
+                }
+                traits_type::copy(_elements(), string._elements(), _size);
+            }
+            else if (string.small())
+            {
+                _deallocate_current();
+                _become_small();
+                traits_type::copy(_small_buffer, string._small_buffer, _size);
+            }
+            else
+            {
+                if (_capacity < _size)
+                {
+                    _deallocate_current();
+                    _allocate_current(_size);
+                }
+                traits_type::copy(_large_buffer, string._large_buffer, _size);
+            }
+            _eos();
+        }
+        return *this;
+    }
+
+    constexpr basic_string& operator=(basic_string&& string)
+    {
+        if (this != std::addressof(string))
+        {
+            _size = string._size;
+            if (!small())
+                _deallocate_current();
+
+            if (string.small())
+            {
+                if (!small())
+                    _become_small();
+                traits_type::copy(_small_buffer, string._small_buffer, _size);
+                _eos();
+            }
+            else
+            {
+                _large_buffer = string._large_buffer;
+                _capacity = string._capacity;
+                string._become_small();
+            }
+            string._size = 0;
+            string._eos();
+        }
+        return *this;
+    }
+
+    constexpr basic_string& operator=(string_view_type view)
+    {
+        if (_elements() != view.data())
+        {
+            _size = view.size();
+            if (_capacity < _size)
+            {
+                auto allocation = _allocate(_size);
+                _capacity = allocation.capacity;
+                // Copy before setting _large_buffer because elements might be in _large_buffer.
+                traits_type::copy(allocation.elements, view.data(), _size);
+                _large_buffer = allocation.elements;
+            }
+            else
+                traits_type::move(_elements(), view.data(), _size);
+            _eos();
+        }
+        return *this;
+    }
+
+    constexpr basic_string& operator=(const_pointer elements)
+    {
+        return *this = string_view_type(elements);
+    }
+
+    basic_string(std::nullptr_t) = delete;
+    basic_string& operator=(std::nullptr_t) = delete;
+
 public:
+    // Returns the length of the string.
     constexpr size_type size() const noexcept { return _size; }
+
+    // Returns the signed length of the string.
     constexpr ssize_type ssize() const noexcept { return static_cast<ssize_type>(_size); }
+
+    // Returns the length of the string.
     constexpr size_type length() const noexcept { return _size; }
+
+    // Returns the capacity of the string.
     constexpr size_type capacity() const noexcept { return _capacity; }
 
+    // Returns the max size of the string.
     constexpr size_type max_size() const noexcept
     {
         return std::min(
-            allocator_traits::max_size(_allocator),
-            std::numeric_limits<ssize_type>::max() / sizeof(value_type)
-        ) - 1;
+            allocator_traits::max_size(_allocator) - 1,
+            (std::numeric_limits<ssize_type>::max()- 1) / sizeof(value_type)
+        );
     }
 
+    // Returns if the string is currently in small mode.
     constexpr bool small() const noexcept { return _capacity <= _internal_capacity(); }
+
+    // Returns if the string is empty.
     constexpr bool empty() const noexcept { return _size == 0; }
 
 public:
+    // Returns a reference to the first character in the string.
     constexpr reference front() { return at(0); }
+    // Returns a reference to the first character in the string.
     constexpr const_reference front() const { return at(0); }
+    // Returns a reference to the last character in the string.
     constexpr reference back() { return at(_size - 1); }
+    // Returns a reference to the last character in the string.
     constexpr const_reference back() const { return at(_size - 1); }
 
+    // Returns a reference to the character at the given index in the string.
     constexpr const_reference at(size_type index) const
-    { return 0 <= index && index < _size ? _elements()[index] : nult; }
+    {
+        return 0 <= index && index < _size ? _elements()[index] : nult;
+    }
 
-    // g++ still doesn't have "deducing this".
+    // Returns a reference to the character at the given index in the string.
     constexpr reference at(size_type index)
     {
         return const_cast<pointer>(const_cast<const basic_string*>(this)->at(index));
     }
 
+    // Returns a pointer to the elements.
     constexpr pointer data() noexcept { return _elements(); }
-    // g++ still doesn't have "deducing this".
+    // Returns a pointer to the elements.
     constexpr const_pointer data() const noexcept { return _elements(); }
+    // Returns a pointer to immutable elements.
     constexpr const_pointer c_str() const noexcept { return _elements(); }
+    // Converts this string into a string view.
     constexpr operator string_view_type() const noexcept { return {_elements(), _size}; }
 
 private:
@@ -239,6 +335,18 @@ private:
     constexpr void deallocate(_allocation_result allocation) noexcept
     {
         allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity);
+    }
+
+    constexpr void _allocate_current(size_type element_count)
+    {
+        auto allocation = _allocate(_size);
+        _large_buffer = allocation.elements;
+        _capacity = allocation.capacity;
+    }
+
+    constexpr void _deallocate_current()
+    {
+        deallocate({ _large_buffer, _capacity });
     }
 
 private:

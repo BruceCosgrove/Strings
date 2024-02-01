@@ -26,5 +26,27 @@ int main()
     DEBUG_STRING(u32string, "");
     DEBUG_STRING(wstring, "  ");
 
+    string a;
+    string b = str;
+    string c = std::move(b);
+    string d(strview);
+    string e = "Goodbye.";
+    string f = "Alone again... naturallyyyyyyy..";
+    // string z = nullptr;
+    a = b;
+    c = d;
+    e = std::move(c);
+    a = strview;
+    b = "Sideways-|";
+    c = "supercalifragilisticexpialadocious";
+    string g = c;
+    string h = std::move(c);
+    string i = string(string_view(g));
+    i = a;
+    h = g;
+    g = std::move(h);
+    g = std::move(i);
+    // a = nullptr;
+
     return 0;
 }
