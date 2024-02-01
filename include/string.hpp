@@ -212,7 +212,7 @@ public:
     {
         return std::min(
             allocator_traits::max_size(_allocator) - 1,
-            (std::numeric_limits<ssize_type>::max()- 1) / sizeof(value_type)
+            (std::numeric_limits<ssize_type>::max() - 1) / sizeof(value_type)
         );
     }
 
