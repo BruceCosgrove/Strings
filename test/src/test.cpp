@@ -48,5 +48,15 @@ int main()
     g = std::move(i);
     // a = nullptr;
 
+    for (auto c : g)
+        std::cout << c;
+
+    for (auto it = g.crbegin(); it != g.crend(); ++it)
+        std::cout << *it;
+    std::cout << '\n';
+
+    std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(g) ? "==" : "!=") << " \"" << g << "\"\n";
+    std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(b) ? "==" : "!=") << " \"" << b << "\"\n";
+
     return 0;
 }

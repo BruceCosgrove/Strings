@@ -194,7 +194,49 @@ public:
     basic_string(std::nullptr_t) = delete;
     basic_string& operator=(std::nullptr_t) = delete;
 
+    // TODO: assign
+
 public:
+    // Returns a reference to the character at the given index in the string.
+    constexpr reference operator[](size_type index) { return at(index);}
+    // Returns an immutable reference to the character at the given index in the string.
+    constexpr const_reference operator[](size_type index) const { return at(index);}
+
+    // Returns an immutable reference to the character at the given index in the string.
+    constexpr const_reference at(size_type index) const
+    { return 0 <= index && index < _size ? _elements()[index] : nult; }
+    // Returns a reference to the character at the given index in the string.
+    constexpr reference at(size_type index)
+    { return const_cast<pointer>(const_cast<const basic_string*>(this)->at(index)); }
+
+    // Returns a reference to the first character in the string.
+    constexpr reference front() { return at(0); }
+    // Returns an immutable reference to the first character in the string.
+    constexpr const_reference front() const { return at(0); }
+
+    // Returns a reference to the last character in the string.
+    constexpr reference back() { return at(_size - 1); }
+    // Returns an immutable reference to the last character in the string.
+    constexpr const_reference back() const { return at(_size - 1); }
+
+    // Returns a pointer to the elements.
+    constexpr pointer data() noexcept { return _elements(); }
+    // Returns a pointer to immutable elements.
+    constexpr const_pointer data() const noexcept { return _elements(); }
+
+    // Returns a pointer to immutable elements.
+    constexpr const_pointer c_str() const noexcept { return _elements(); }
+
+    // Converts this string into a string view.
+    constexpr operator string_view_type() const noexcept { return {_elements(), _size}; }
+
+public:
+    // Returns if the string is currently in small mode.
+    constexpr bool small() const noexcept { return _capacity <= _internal_capacity(); }
+
+    // Returns if the string is empty.
+    constexpr bool empty() const noexcept { return _size == 0; }
+
     // Returns the length of the string.
     constexpr size_type size() const noexcept { return _size; }
 
@@ -203,9 +245,6 @@ public:
 
     // Returns the length of the string.
     constexpr size_type length() const noexcept { return _size; }
-
-    // Returns the capacity of the string.
-    constexpr size_type capacity() const noexcept { return _capacity; }
 
     // Returns the max size of the string.
     constexpr size_type max_size() const noexcept
@@ -216,42 +255,76 @@ public:
         );
     }
 
-    // Returns if the string is currently in small mode.
-    constexpr bool small() const noexcept { return _capacity <= _internal_capacity(); }
+    // TODO: reserve
 
-    // Returns if the string is empty.
-    constexpr bool empty() const noexcept { return _size == 0; }
+    // Returns the capacity of the string.
+    constexpr size_type capacity() const noexcept { return _capacity; }
+
+    // TODO: shrink_to_fit
 
 public:
-    // Returns a reference to the first character in the string.
-    constexpr reference front() { return at(0); }
-    // Returns a reference to the first character in the string.
-    constexpr const_reference front() const { return at(0); }
-    // Returns a reference to the last character in the string.
-    constexpr reference back() { return at(_size - 1); }
-    // Returns a reference to the last character in the string.
-    constexpr const_reference back() const { return at(_size - 1); }
+    // TODO: clear
 
-    // Returns a reference to the character at the given index in the string.
-    constexpr const_reference at(size_type index) const
-    {
-        return 0 <= index && index < _size ? _elements()[index] : nult;
-    }
+    // TODO: insert
 
-    // Returns a reference to the character at the given index in the string.
-    constexpr reference at(size_type index)
-    {
-        return const_cast<pointer>(const_cast<const basic_string*>(this)->at(index));
-    }
+    // TODO: erase
 
-    // Returns a pointer to the elements.
-    constexpr pointer data() noexcept { return _elements(); }
-    // Returns a pointer to the elements.
-    constexpr const_pointer data() const noexcept { return _elements(); }
-    // Returns a pointer to immutable elements.
-    constexpr const_pointer c_str() const noexcept { return _elements(); }
-    // Converts this string into a string view.
-    constexpr operator string_view_type() const noexcept { return {_elements(), _size}; }
+    // TODO: push_back
+
+    // TODO: pop_back
+
+    // TODO: append
+
+    // TODO: operator+=
+
+    // TODO: replace
+
+    // TODO: resize
+
+    // TODO: swap
+    // Swaps this string with the given string.
+
+public:
+    // TODO: copy
+
+    // TODO: substr
+
+    // TODO: compare
+
+    // TODO: starts_with
+
+    // TODO: ends_with
+
+    // TODO: contains
+
+public:
+    // TODO: find
+
+    // TODO: rfind
+
+    // TODO: find_first_of
+
+    // TODO: find_first_not_of
+
+    // TODO: fint_last_of
+
+    // TODO: find_last_not_of
+
+public:
+    constexpr iterator begin() noexcept { return iterator(_elements()); }
+    constexpr iterator end() noexcept { return iterator(_elements() + _size); }
+    constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(_elements() + (_size - 1)); }
+    constexpr reverse_iterator rend() noexcept { return reverse_iterator(_elements() - 1); }
+
+    constexpr const_iterator begin() const noexcept { return const_iterator(_elements()); }
+    constexpr const_iterator end() const noexcept { return const_iterator(_elements() + _size); }
+    constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_elements() + (_size - 1)); }
+    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_elements() - 1); }
+
+    constexpr const_iterator cbegin() const noexcept { return const_iterator(_elements()); }
+    constexpr const_iterator cend() const noexcept { return const_iterator(_elements() + _size); }
+    constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_elements() + (_size - 1)); }
+    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_elements() - 1); }
 
 private:
     // Starts the string in large mode. Assumes initially not in either mode.
@@ -332,7 +405,7 @@ private:
         return { allocator_traits::allocate(_allocator, element_count), element_count };
     }
 
-    constexpr void deallocate(_allocation_result allocation) noexcept
+    constexpr void _deallocate(_allocation_result allocation) noexcept
     {
         allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity);
     }
@@ -346,7 +419,7 @@ private:
 
     constexpr void _deallocate_current()
     {
-        deallocate({ _large_buffer, _capacity });
+        _deallocate({ _large_buffer, _capacity });
     }
 
 private:
