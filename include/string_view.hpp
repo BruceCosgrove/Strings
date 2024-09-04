@@ -19,7 +19,9 @@ public:
 
     using ssize_type = std::make_signed_t<size_type>;
 
+    using reference = value_type&;
     using const_reference = const value_type&;
+    using pointer = value_type*;
     using const_pointer = const value_type*;
 
     using const_iterator = const_pointer;
@@ -94,7 +96,15 @@ public:
     { std::swap(*this, view); }
 
 public:
-    // TODO: copy
+    // Copies a substring from this view to the destination.
+    constexpr size_type copy(pointer destination, size_type count, size_type position = 0) const
+    {
+        if (_size <= position)
+            return 0;
+        count = std::min(count, _size - position);
+        traits_type::copy(destination, _data + position, count);
+        return count;
+    }
 
     constexpr basic_string_view substr(size_type offset = 0, size_type count = npos) const noexcept
     {

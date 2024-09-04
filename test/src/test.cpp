@@ -58,5 +58,11 @@ int main()
     std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(g) ? "==" : "!=") << " \"" << g << "\"\n";
     std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(b) ? "==" : "!=") << " \"" << b << "\"\n";
 
+    char buffer[12] = "where world";
+    std::cout << buffer << '\n';
+    auto count = strview.copy(buffer, 4, 12);
+    std::cout << buffer << '\n';
+    std::cout << count << " chars copied\n";
+
     return 0;
 }
