@@ -255,12 +255,52 @@ public:
         );
     }
 
-    // TODO: reserve
+    // Ensures the allocated capacity is at least `new_capacity`.
+    constexpr void reserve(size_type new_capacity)
+    {
+        if (_capacity < new_capacity)
+        {
+            auto allocation = _allocate(new_capacity);
+            traits_type::copy(allocation.elements, _elements(), _size);
+
+            if (small())
+                _become_large();
+            else
+                _deallocate_current();
+
+            _large_buffer = allocation.elements;
+            _capacity = allocation.capacity;
+            _eos();
+        }
+    }
 
     // Returns the capacity of the string.
     constexpr size_type capacity() const noexcept { return _capacity; }
 
-    // TODO: shrink_to_fit
+    // Sets capacity equal to size, if possible.
+    // Capacity will never be less than `sboc`.
+    constexpr void shrink_to_fit()
+    {
+        if (!small() && _size != _capacity)
+        {
+            if (_size <= _internal_capacity())
+            {
+                auto old_allocation = _current_allocation();
+                _become_small();
+                traits_type::copy(_small_buffer, old_allocation.elements, _size);
+                _deallocate(old_allocation);
+            }
+            else
+            {
+                auto allocation = _allocate(_size);
+                traits_type::copy(allocation.elements, _large_buffer, _size);
+                _deallocate_current();
+                _large_buffer = allocation.elements;
+                _capacity = allocation.capacity;
+            }
+            _eos();
+        }
+    }
 
 public:
     // TODO: clear
@@ -297,7 +337,6 @@ public:
 
     // TODO: contains
 
-public:
     // TODO: find
 
     // TODO: rfind
@@ -313,17 +352,17 @@ public:
 public:
     constexpr iterator begin() noexcept { return iterator(_elements()); }
     constexpr iterator end() noexcept { return iterator(_elements() + _size); }
-    constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(_elements() + (_size - 1)); }
+    constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(_elements() + _size); }
     constexpr reverse_iterator rend() noexcept { return reverse_iterator(_elements() - 1); }
 
     constexpr const_iterator begin() const noexcept { return const_iterator(_elements()); }
     constexpr const_iterator end() const noexcept { return const_iterator(_elements() + _size); }
-    constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_elements() + (_size - 1)); }
+    constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_elements() + _size); }
     constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_elements() - 1); }
 
     constexpr const_iterator cbegin() const noexcept { return const_iterator(_elements()); }
     constexpr const_iterator cend() const noexcept { return const_iterator(_elements() + _size); }
-    constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_elements() + (_size - 1)); }
+    constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_elements() + _size); }
     constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_elements() - 1); }
 
 private:
@@ -402,12 +441,12 @@ private:
     constexpr _allocation_result _allocate(size_type element_count)
     {
         // g++ still doesn't have allocator size feedback.
-        return { allocator_traits::allocate(_allocator, element_count), element_count };
+        return { allocator_traits::allocate(_allocator, element_count + 1), element_count };
     }
 
     constexpr void _deallocate(_allocation_result allocation) noexcept
     {
-        allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity);
+        allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity + 1);
     }
 
     constexpr void _allocate_current(size_type element_count)
@@ -417,10 +456,9 @@ private:
         _capacity = allocation.capacity;
     }
 
-    constexpr void _deallocate_current()
-    {
-        _deallocate({ _large_buffer, _capacity });
-    }
+    constexpr _allocation_result _current_allocation() { return { _large_buffer, _capacity }; }
+
+    constexpr void _deallocate_current() { _deallocate(_current_allocation()); }
 
 private:
     // Calculate the number of elements the small buffer can hold.
