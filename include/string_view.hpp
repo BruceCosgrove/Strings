@@ -114,7 +114,25 @@ public:
         return { _data + offset, std::min(_size - offset, count) };
     }
 
-    // TODO: compare
+    // Compares two views.
+    constexpr ssize_type compare(basic_string_view view) const noexcept
+    {
+        if (auto comparison = _traits_t::compare(data(), view.data(), std::min(size(), view.size())))
+            return comparison;
+        return ssize() - view.ssize();
+    }
+
+    // Compares a substring of this view with another view.
+    constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view) const noexcept
+    { return substr(offset1, count1).compare(view); }
+
+    // Compares a substring of this view with a substring of another view.
+    constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view, size_type offset2, size_type count2) const noexcept
+    { return substr(offset1, count1).compare(view.substr(offset2, count2)); }
+
+    // Compares this view with a substring of another view.
+    constexpr ssize_type compare(basic_string_view view, size_type offset2, size_type count2) const noexcept
+    { return compare(view.substr(offset2, count2)); }
 
     // Returns if this view starts with the given view.
     constexpr bool starts_with(basic_string_view view) const noexcept
@@ -176,9 +194,10 @@ constexpr std::strong_ordering operator<=>(
     basic_string_view<_char_t, _size_t, _traits_t> b
 ) noexcept
 {
-    if (auto comparison = _traits_t::compare(a.data(), b.data(), std::min(a.size(), b.size())))
-        return comparison;
-    return a.ssize() - b.ssize();
+    auto comparison = a.compare(b);
+    return comparison < 0 ? std::strong_ordering::less :
+            comparison == 0 ? std::strong_ordering::equal :
+            std::strong_ordering::greater;
 }
 
 using string_view = basic_string_view<char, std::size_t>;

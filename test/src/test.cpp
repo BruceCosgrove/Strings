@@ -55,14 +55,22 @@ int main()
         std::cout << *it;
     std::cout << '\n';
 
-    std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(g) ? "==" : "!=") << " \"" << g << "\"\n";
-    std::cout << '"' << b << "\" " << (static_cast<string_view>(b) == static_cast<string_view>(b) ? "==" : "!=") << " \"" << b << "\"\n";
+    auto bsv = static_cast<string_view>(b);
+    auto gsv = static_cast<string_view>(g);
 
+    std::cout << '"' << bsv << "\" " << (bsv == gsv ? "==" : "!=") << " \"" << gsv << "\"\n";
+    std::cout << '"' << bsv << "\" " << (bsv == bsv ? "==" : "!=") << " \"" << bsv << "\"\n";
+
+    // copy
     char buffer[12] = "where world";
     std::cout << buffer << '\n';
     auto count = strview.copy(buffer, 4, 12);
     std::cout << buffer << '\n';
     std::cout << count << " chars copied\n";
+
+    // compare
+    std::cout << bsv.compare(gsv) << '\n';
+    std::cout << bsv.compare("") << '\n';
 
     return 0;
 }
