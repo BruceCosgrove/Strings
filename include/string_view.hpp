@@ -106,6 +106,7 @@ public:
         return count;
     }
 
+    // Returns substring of max length `count` starting from `offset`.
     constexpr basic_string_view substr(size_type offset = 0, size_type count = npos) const noexcept
     {
         if (_size < offset)
@@ -115,9 +116,11 @@ public:
 
     // TODO: compare
 
+    // Returns if this view starts with the given view.
     constexpr bool starts_with(basic_string_view view) const noexcept
     { return view._size <= _size && substr(0, view._size) == view; }
 
+    // Returns if this view ends with the given view.
     constexpr bool ends_with(basic_string_view view) const noexcept
     { return view._size <= _size && substr(_size - view._size, view._size) == view; }
 
