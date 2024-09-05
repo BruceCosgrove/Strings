@@ -5,9 +5,9 @@ This is my attempt at implementing strings, which includes the following:
 2. Customizable minimum SSBO capacity.
 3. Customizable size type.
 4. Aware of char_traits and allocator.
-   - The allocator is required to be stateless, and as such does not increase the `sizeof(basic_string)`.
 5. Very similar to `std::string` and `std::string_view`.
    - Most methods from `std::string` and `std::string_view` are present.
+   - The allocator is required to be stateless.
    - Includes an `ssize` member function.
    - No explicit exceptions. Valid values are returned in error cases, e.g. `basic_string::nult`.
    - Every public member function that accesses elements is bounds checked to maintain memory safety.
