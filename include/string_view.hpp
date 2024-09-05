@@ -33,13 +33,13 @@ public:
     static_assert(std::is_same_v<value_type, typename traits_type::char_type>, "Traits must have same value type.");
 
 public:
-    constexpr basic_string_view() noexcept
+    [[nodiscard]] constexpr basic_string_view() noexcept
         : _data(nullptr), _size(0) {}
 
-    constexpr basic_string_view(const_pointer data)
+    [[nodiscard]] constexpr basic_string_view(const_pointer data)
         : _data(data), _size(traits_type::length(data)) {}
 
-    constexpr basic_string_view(const_pointer data, size_type size)
+    [[nodiscard]] constexpr basic_string_view(const_pointer data, size_type size)
         : _data(data), _size(size) {}
 
     constexpr basic_string_view(const basic_string_view&) noexcept = default;
@@ -52,43 +52,43 @@ public:
 
 public:
     // Returns an immutable reference to the character at the given index in the view.
-    constexpr const_reference operator[](size_type index) const noexcept { return at(index); }
+    [[nodiscard]] constexpr const_reference operator[](size_type index) const noexcept { return at(index); }
 
     // Returns an immutable reference to the character at the given index in the view.
-    constexpr const_reference at(size_type index) const noexcept { return 0 <= index && index < _size ? _data[index] : nult; }
+    [[nodiscard]] constexpr const_reference at(size_type index) const noexcept { return 0 <= index && index < _size ? _data[index] : nult; }
 
     // Returns an immutable reference to the first character in the view.
-    constexpr const_reference front() const noexcept { return at(0); }
+    [[nodiscard]] constexpr const_reference front() const noexcept { return at(0); }
 
     // Returns an immutable reference to the last character in the view.
-    constexpr const_reference back() const noexcept { return at(_size - 1); }
+    [[nodiscard]] constexpr const_reference back() const noexcept { return at(_size - 1); }
 
     // Returns a pointer to immutable elements.
-    constexpr const_pointer data() const noexcept { return _data; }
+    [[nodiscard]] constexpr const_pointer data() const noexcept { return _data; }
 
 public:
     // Returns if the view is empty.
-    constexpr bool empty() const noexcept { return _size == 0; }
+    [[nodiscard]] constexpr bool empty() const noexcept { return _size == 0; }
 
     // Returns the length of the view.
-    constexpr size_type size() const noexcept { return _size; }
+    [[nodiscard]] constexpr size_type size() const noexcept { return _size; }
 
     // Returns the signed length of the view.
-    constexpr ssize_type ssize() const noexcept { return static_cast<ssize_type>(_size); }
+    [[nodiscard]] constexpr ssize_type ssize() const noexcept { return static_cast<ssize_type>(_size); }
 
     // Returns the length of the view.
-    constexpr size_type length() const noexcept { return _size; }
+    [[nodiscard]] constexpr size_type length() const noexcept { return _size; }
 
     // Returns the max size of the view.
-    static constexpr size_type max_size() noexcept { return std::numeric_limits<ssize_type>::max() / sizeof(value_type); }
+    [[nodiscard]] static constexpr size_type max_size() noexcept { return std::numeric_limits<ssize_type>::max() / sizeof(value_type); }
 
 public:
     // Returns a new view with the first n characters removed.
-    constexpr basic_string_view remove_prefix(size_type n) const noexcept
+    [[nodiscard]] constexpr basic_string_view remove_prefix(size_type n) const noexcept
     { return _size < n ? _retain_empty() : basic_string_view(_data + n, _size - n); }
 
     // Returns a new view with the last n characters removed.
-    constexpr basic_string_view remove_suffix(size_type n) const noexcept
+    [[nodiscard]] constexpr basic_string_view remove_suffix(size_type n) const noexcept
     { return _size < n ? _retain_empty() : basic_string_view(_data, _size - n); }
 
     // Swaps this view with the given view.
@@ -107,7 +107,7 @@ public:
     }
 
     // Returns substring of max length `count` starting from `offset`.
-    constexpr basic_string_view substr(size_type offset = 0, size_type count = npos) const noexcept
+    [[nodiscard]] constexpr basic_string_view substr(size_type offset = 0, size_type count = npos) const noexcept
     {
         if (_size < offset)
             return _retain_empty();
@@ -115,7 +115,7 @@ public:
     }
 
     // Compares two views.
-    constexpr ssize_type compare(basic_string_view view) const noexcept
+    [[nodiscard]] constexpr ssize_type compare(basic_string_view view) const noexcept
     {
         if (auto comparison = _traits_t::compare(data(), view.data(), std::min(size(), view.size())))
             return comparison;
@@ -123,23 +123,23 @@ public:
     }
 
     // Compares a substring of this view with another view.
-    constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view) const noexcept
+    [[nodiscard]] constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view) const noexcept
     { return substr(offset1, count1).compare(view); }
 
     // Compares a substring of this view with a substring of another view.
-    constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view, size_type offset2, size_type count2) const noexcept
+    [[nodiscard]] constexpr ssize_type compare(size_type offset1, size_type count1, basic_string_view view, size_type offset2, size_type count2) const noexcept
     { return substr(offset1, count1).compare(view.substr(offset2, count2)); }
 
     // Compares this view with a substring of another view.
-    constexpr ssize_type compare(basic_string_view view, size_type offset2, size_type count2) const noexcept
+    [[nodiscard]] constexpr ssize_type compare(basic_string_view view, size_type offset2, size_type count2) const noexcept
     { return compare(view.substr(offset2, count2)); }
 
     // Returns if this view starts with the given view.
-    constexpr bool starts_with(basic_string_view view) const noexcept
+    [[nodiscard]] constexpr bool starts_with(basic_string_view view) const noexcept
     { return view._size <= _size && substr(0, view._size) == view; }
 
     // Returns if this view ends with the given view.
-    constexpr bool ends_with(basic_string_view view) const noexcept
+    [[nodiscard]] constexpr bool ends_with(basic_string_view view) const noexcept
     { return view._size <= _size && substr(_size - view._size, view._size) == view; }
 
     // TODO: contains
@@ -157,15 +157,15 @@ public:
     // TODO: find_last_not_of
 
 public:
-    constexpr const_iterator begin() const noexcept { return const_iterator(_data); }
-    constexpr const_iterator end() const noexcept { return const_iterator(_data + _size); }
-    constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_data + _size); }
-    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_data); }
+    [[nodiscard]] constexpr const_iterator begin() const noexcept { return const_iterator(_data); }
+    [[nodiscard]] constexpr const_iterator end() const noexcept { return const_iterator(_data + _size); }
+    [[nodiscard]] constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_data + _size); }
+    [[nodiscard]] constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_data); }
 
-    constexpr const_iterator cbegin() const noexcept { return const_iterator(_data); }
-    constexpr const_iterator cend() const noexcept { return const_iterator(_data + _size); }
-    constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_data + _size); }
-    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_data); }
+    [[nodiscard]] constexpr const_iterator cbegin() const noexcept { return const_iterator(_data); }
+    [[nodiscard]] constexpr const_iterator cend() const noexcept { return const_iterator(_data + _size); }
+    [[nodiscard]] constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_data + _size); }
+    [[nodiscard]] constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_data); }
 
 private:
     // For better debugging.
