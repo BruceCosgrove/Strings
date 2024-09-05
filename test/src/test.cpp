@@ -10,9 +10,9 @@ static void TestEmpty(string& s)
 {
     ASSERT_TRUE(s.small());
     ASSERT_TRUE(s.empty());
-    ASSERT_EQ(s.size(), 0);
-    ASSERT_EQ(s.ssize(), 0);
-    ASSERT_EQ(s.length(), 0);
+    ASSERT_EQ(s.size(), 0ul);
+    ASSERT_EQ(s.ssize(), 0l);
+    ASSERT_EQ(s.length(), 0ul);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin(), s.end());
     ASSERT_EQ(s.cbegin(), s.cend());
@@ -33,7 +33,7 @@ TEST(StringConstructors, CopyConstructor_Small) {
     ASSERT_TRUE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), SmallLength);
-    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(SmallLength));
     ASSERT_EQ(s.length(), SmallLength);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin() + SmallLength, s.end());
@@ -50,7 +50,7 @@ TEST(StringConstructors, CopyConstructor_Large) {
     ASSERT_FALSE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), LargeLength);
-    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(LargeLength));
     ASSERT_EQ(s.length(), LargeLength);
     ASSERT_GE(s.capacity(), LargeLength);
     ASSERT_EQ(s.begin() + LargeLength, s.end());
@@ -67,7 +67,7 @@ TEST(StringConstructors, MoveConstructor_Small) {
     ASSERT_TRUE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), SmallLength);
-    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(SmallLength));
     ASSERT_EQ(s.length(), SmallLength);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin() + SmallLength, s.end());
@@ -86,7 +86,7 @@ TEST(StringConstructors, MoveConstructor_Large) {
     ASSERT_FALSE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), LargeLength);
-    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(LargeLength));
     ASSERT_EQ(s.length(), LargeLength);
     ASSERT_GE(s.capacity(), LargeLength);
     ASSERT_EQ(s.begin() + LargeLength, s.end());
@@ -104,7 +104,7 @@ TEST(StringConstructors, size_type_value_type_Constructor_Small) {
     ASSERT_TRUE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), SmallLength);
-    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(SmallLength));
     ASSERT_EQ(s.length(), SmallLength);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin() + SmallLength, s.end());
@@ -120,7 +120,7 @@ TEST(StringConstructors, size_type_value_type_Constructor_Large) {
     ASSERT_FALSE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), LargeLength);
-    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(LargeLength));
     ASSERT_EQ(s.length(), LargeLength);
     ASSERT_GE(s.capacity(), LargeLength);
     ASSERT_EQ(s.begin() + LargeLength, s.end());
@@ -137,7 +137,7 @@ TEST(StringConstructors, string_view_type_Constructor_Small) {
     ASSERT_TRUE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), SmallLength);
-    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(SmallLength));
     ASSERT_EQ(s.length(), SmallLength);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin() + SmallLength, s.end());
@@ -154,7 +154,7 @@ TEST(StringConstructors, string_view_type_Constructor_Large) {
     ASSERT_FALSE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), LargeLength);
-    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(LargeLength));
     ASSERT_EQ(s.length(), LargeLength);
     ASSERT_GE(s.capacity(), LargeLength);
     ASSERT_EQ(s.begin() + LargeLength, s.end());
@@ -170,7 +170,7 @@ TEST(StringConstructors, const_pointer_Constructor_Small) {
     ASSERT_TRUE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), SmallLength);
-    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(SmallLength));
     ASSERT_EQ(s.length(), SmallLength);
     ASSERT_EQ(s.capacity(), string::sboc);
     ASSERT_EQ(s.begin() + SmallLength, s.end());
@@ -186,7 +186,7 @@ TEST(StringConstructors, const_pointer_Constructor_Large) {
     ASSERT_FALSE(s.small());
     ASSERT_FALSE(s.empty());
     ASSERT_EQ(s.size(), LargeLength);
-    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.ssize(), static_cast<decltype(s.ssize())>(LargeLength));
     ASSERT_EQ(s.length(), LargeLength);
     ASSERT_GE(s.capacity(), LargeLength);
     ASSERT_EQ(s.begin() + LargeLength, s.end());
