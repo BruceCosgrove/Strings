@@ -496,19 +496,19 @@ private:
     }
 
 private:
-    struct _allocation_result
+    struct _allocation
     {
         pointer elements;
         size_type capacity;
     };
 
-    constexpr _allocation_result _allocate(size_type element_count)
+    constexpr _allocation _allocate(size_type element_count)
     {
         // g++ still doesn't have allocator size feedback.
         return { allocator_traits::allocate(_allocator, element_count + 1), element_count };
     }
 
-    constexpr void _deallocate(_allocation_result allocation) noexcept
+    constexpr void _deallocate(_allocation allocation) noexcept
     {
         allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity + 1);
     }
@@ -520,7 +520,7 @@ private:
         _capacity = allocation.capacity;
     }
 
-    constexpr _allocation_result _current_allocation() { return { _large_buffer, _capacity }; }
+    constexpr _allocation _current_allocation() { return { _large_buffer, _capacity }; }
 
     constexpr void _deallocate_current() noexcept { _deallocate(_current_allocation()); }
 
