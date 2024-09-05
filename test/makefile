@@ -43,26 +43,28 @@ OBJS := $(patsubst $(SRC_DIR)%.cpp,$(INT_DIR)%.o,$(SRCS))
 DEPS := $(patsubst $(SRC_DIR)%.cpp,$(INT_DIR)%.d,$(SRCS))
 # Get all directories that should be pre-created (w/ duplicates removed so mkdir doesn't warn).
 DIRS := $(sort $(INT_DIR) $(OUT_DIR) $(INT_DIR)$(GTEST_SRC_DIR) $(patsubst $(SRC_DIR)%,$(INT_DIR)%,$(sort $(dir $(SRCS)))))
-# Get the executable's filepath.
-EXE := $(OUT_DIR)$(OUT_NAME)
+# Get the output's filepath.
+OUT := $(OUT_DIR)$(OUT_NAME)
 
-# Compile the executable.
-all: $(EXE) $(MAKEFILE)
+# Compile the output.
+all: $(OUT) $(MAKEFILE)
 
 # Include all source dependencies.
 -include $(DEPS)
 
 # Create necessary directories, compile, get dependencies, and make sure to recompile everything if the makefile changed.
+.SECONDARY: $(OBJS)
 $(INT_DIR)%.o: $(SRC_DIR)%.cpp $(MAKEFILE) | create_dirs
 	$(COMPILER) $(CXXFLAGS) -MMD -c $(INCS) $(GTEST_INCS) -o $@ $<
 
-# Compile GoogleTest
+# Compile GoogleTest.
+.SECONDARY: $(GTEST_OBJS)
 $(INT_DIR)$(GTEST_SRC_DIR)%.o: $(GTEST_SRC_DIR)%.cc $(MAKEFILE) | create_dirs
 	$(COMPILER) $(CXXFLAGS) $(GTEST_FLAGS) -c $(GTEST_INCS) -o $@ $<
 
-# Link all objs into the executable.
-$(EXE): $(OBJS) $(GTEST_OBJS) $(MAKEFILE)
-	$(COMPILER) -o $(EXE) $(OBJS) $(GTEST_OBJS)
+# Link all objs into the output.
+$(OUT): $(OBJS) $(GTEST_OBJS) $(MAKEFILE)
+	$(COMPILER) -o $(OUT) $(OBJS) $(GTEST_OBJS)
 
 # Creates all the necessary directories.
 .PHONY: create_dirs
@@ -72,8 +74,8 @@ $(DIRS):
 
 # Runs the test.
 .PHONY: run
-run: $(EXE)
-	./$(EXE)
+run: $(OUT)
+	./$(OUT)
 
 # Clears the terminal.
 .PHONY: clear
@@ -92,8 +94,8 @@ ccrun: clean clear run
 
 # Debugs the test.
 .PHONY: rund
-rund: $(EXE)
-	gdb ./$(EXE)
+rund: $(OUT)
+	gdb ./$(OUT)
 
 # Removes all intermediates and the executable.
 .PHONY: clean
