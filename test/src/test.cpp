@@ -28,7 +28,7 @@ int main()
     DEBUG_STRING(u32string, "");
     DEBUG_STRING(wstring, "  ");
 
-    // std::cout << "\ncontructors and operator=\n";
+    std::cout << "\ncontructors and operator=\n";
     string a;
     string b = str;
     string c = std::move(b);
@@ -50,6 +50,10 @@ int main()
     g = std::move(h);
     g = std::move(i);
     // a = nullptr;
+    string k(10, 'k');
+    std::cout << k << '\n';
+    string l(20, 'l');
+    std::cout << l << '\n';
 
     std::cout << "\niterators\n";
     int i2 = 0;

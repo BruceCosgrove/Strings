@@ -56,15 +56,8 @@ public:
     [[nodiscard]] constexpr basic_string(const basic_string& string)
         : _size(string._size)
     {
-        if (_size <= _internal_capacity())
-            _init_small();
-        else
-        {
-            _init_large();
-            _allocate_current();
-        }
+        _init_from_size();
         traits_type::copy(_elements(), string._elements(), _size);
-        _eos();
     }
 
     [[nodiscard]] constexpr basic_string(basic_string&& string) noexcept
@@ -73,8 +66,8 @@ public:
         if (_size <= _internal_capacity())
         {
             _init_small();
-            traits_type::copy(_small_buffer, string._small_buffer, _size);
             _eos();
+            traits_type::copy(_small_buffer, string._small_buffer, _size);
         }
         else
         {
@@ -87,18 +80,18 @@ public:
         string._eos();
     }
 
+    [[nodiscard]] constexpr basic_string(size_type count, value_type element) noexcept
+        : _size(count)
+    {
+        _init_from_size();
+        traits_type::assign(_elements(), count, element);
+    }
+
     [[nodiscard]] explicit constexpr basic_string(string_view_type view)
         : _size(view.size())
     {
-        if (_size <= _internal_capacity())
-            _init_small();
-        else
-        {
-            _init_large();
-            _allocate_current();
-        }
+        _init_from_size();
         traits_type::copy(_elements(), view.data(), _size);
-        _eos();
     }
 
     [[nodiscard]] constexpr basic_string(const_pointer elements)
@@ -187,13 +180,15 @@ public:
                 traits_type::move(_elements(), view.data(), _size);
             _eos();
         }
+        else if (_size > view.size())
+        {
+            _size = view.size();
+            _eos();
+        }
         return *this;
     }
 
-    constexpr basic_string& operator=(const_pointer elements)
-    {
-        return *this = string_view_type(elements);
-    }
+    constexpr basic_string& operator=(const_pointer elements) { return *this = string_view_type(elements); }
 
     constexpr ~basic_string() noexcept
     {
@@ -423,6 +418,19 @@ public:
     [[nodiscard]] constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_elements()); }
 
 private:
+    // Initializes the string to be small or large, depending on the size.
+    constexpr void _init_from_size()
+    {
+        if (_size <= _internal_capacity())
+            _init_small();
+        else
+        {
+            _init_large();
+            _allocate_current();
+        }
+        _eos();
+    }
+
     // Starts the string in large mode. Assumes initially not in either mode.
     constexpr void _init_large() noexcept
     {
