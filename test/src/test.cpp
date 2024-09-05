@@ -52,12 +52,14 @@ int main()
     // a = nullptr;
 
     std::cout << "\niterators\n";
+    int i2 = 0;
     for (auto c : g)
-        std::cout << c;
-    std::cout << '\n';
+        { std::cout << c; ++i2; }
+    std::cout << ' ' << i2 << '\n';
+    int i3 = 0;
     for (auto it = g.crbegin(); it != g.crend(); ++it)
-        std::cout << *it;
-    std::cout << '\n';
+        { std::cout << *it; ++i3; }
+    std::cout << ' ' << i3 << '\n';
 
     std::cout << "\nequality\n";
     auto bsv = static_cast<string_view>(b);
@@ -92,6 +94,17 @@ int main()
     std::cout << s_rstf.capacity() << ' ';
     s_rstf.shrink_to_fit();
     std::cout << s_rstf.capacity() << '\n';
+
+    std::cout << "\nswap\n";
+    #define CHECK_SWAP(a, b) \
+        std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << " to \n"; \
+        a.swap(b); \
+        std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << "\n\n"
+    CHECK_SWAP(s_rstf, s_rstf);
+    CHECK_SWAP(s_rstf, b);
+    CHECK_SWAP(a, b);
+    CHECK_SWAP(s_rstf, h);
+    CHECK_SWAP(s_rstf, s_rstf);
 
     return 0;
 }

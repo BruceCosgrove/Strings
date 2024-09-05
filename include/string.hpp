@@ -53,6 +53,7 @@ public:
 
     constexpr basic_string(const basic_string& string)
         : _size(string._size)
+        , _allocator(string._allocator)
     {
         if (_size <= _internal_capacity())
             _init_small();
@@ -65,8 +66,9 @@ public:
         _eos();
     }
 
-    constexpr basic_string(basic_string&& string) noexcept
+    constexpr basic_string(basic_string&& string) noexcept(std::is_nothrow_move_constructible_v<allocator_traits>)
         : _size(string._size)
+        , _allocator(std::move(string._allocator))
     {
         if (_size <= _internal_capacity())
         {
@@ -114,6 +116,7 @@ public:
             {
                 if (!string.small())
                 {
+                    _allocator = string._allocator;
                     _become_large();
                     _allocate_current(_size);
                 }
@@ -122,6 +125,7 @@ public:
             else if (string.small())
             {
                 _deallocate_current();
+                _allocator = string._allocator;
                 _become_small();
                 traits_type::copy(_small_buffer, string._small_buffer, _size);
             }
@@ -130,6 +134,7 @@ public:
                 if (_capacity < _size)
                 {
                     _deallocate_current();
+                    _allocator = string._allocator;
                     _allocate_current(_size);
                 }
                 traits_type::copy(_large_buffer, string._large_buffer, _size);
@@ -146,6 +151,8 @@ public:
             _size = string._size;
             if (!small())
                 _deallocate_current();
+
+            _allocator = std::move(string._allocator);
 
             if (string.small())
             {
@@ -321,8 +328,44 @@ public:
 
     // TODO: resize
 
-    // TODO: swap
     // Swaps this string with the given string.
+    constexpr void swap(basic_string& string) noexcept
+    {
+        if (small())
+        {
+            if (string.small())
+            {
+                value_type temp[_internal_capacity()];
+                traits_type::copy(temp, _small_buffer, _size);
+                traits_type::copy(_small_buffer, string._small_buffer, string._size);
+                traits_type::copy(string._small_buffer, temp, _size);
+                std::swap(_size, string._size);
+                _eos();
+                string._eos();
+            }
+            else
+            {
+                auto other_allocation = string._current_allocation();
+                string._become_small();
+                traits_type::copy(string._small_buffer, _small_buffer, _size);
+                _become_large();
+                _large_buffer = other_allocation.elements;
+                _capacity = other_allocation.capacity;
+                std::swap(_size, string._size);
+                string._eos();
+            }
+        }
+        else if (string.small())
+            return string.swap(*this); // Use the above case, but reverse the swapping order.
+        else
+        {
+            std::swap(_large_buffer, string._large_buffer);
+            std::swap(_size, string._size);
+            std::swap(_capacity, string._capacity);
+        }
+
+        std::swap(_allocator, string._allocator);
+    }
 
 public:
     // TODO: copy
@@ -353,17 +396,17 @@ public:
     constexpr iterator begin() noexcept { return iterator(_elements()); }
     constexpr iterator end() noexcept { return iterator(_elements() + _size); }
     constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(_elements() + _size); }
-    constexpr reverse_iterator rend() noexcept { return reverse_iterator(_elements() - 1); }
+    constexpr reverse_iterator rend() noexcept { return reverse_iterator(_elements()); }
 
     constexpr const_iterator begin() const noexcept { return const_iterator(_elements()); }
     constexpr const_iterator end() const noexcept { return const_iterator(_elements() + _size); }
     constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_elements() + _size); }
-    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_elements() - 1); }
+    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_elements()); }
 
     constexpr const_iterator cbegin() const noexcept { return const_iterator(_elements()); }
     constexpr const_iterator cend() const noexcept { return const_iterator(_elements() + _size); }
     constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_elements() + _size); }
-    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_elements() - 1); }
+    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_elements()); }
 
 private:
     // Starts the string in large mode. Assumes initially not in either mode.

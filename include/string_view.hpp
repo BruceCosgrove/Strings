@@ -160,12 +160,12 @@ public:
     constexpr const_iterator begin() const noexcept { return const_iterator(_data); }
     constexpr const_iterator end() const noexcept { return const_iterator(_data + _size); }
     constexpr const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(_data + _size); }
-    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_data - 1); }
+    constexpr const_reverse_iterator rend() const noexcept { return const_reverse_iterator(_data); }
 
     constexpr const_iterator cbegin() const noexcept { return const_iterator(_data); }
     constexpr const_iterator cend() const noexcept { return const_iterator(_data + _size); }
     constexpr const_reverse_iterator crbegin() const noexcept { return const_reverse_iterator(_data + _size); }
-    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_data - 1); }
+    constexpr const_reverse_iterator crend() const noexcept { return const_reverse_iterator(_data); }
 
 private:
     // For better debugging.
