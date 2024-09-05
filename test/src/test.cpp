@@ -97,7 +97,7 @@ int main()
 
     std::cout << "\nswap\n";
     #define CHECK_SWAP(a, b) \
-        std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << " to \n"; \
+        std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << " to\n"; \
         a.swap(b); \
         std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << "\n\n"
     CHECK_SWAP(s_rstf, s_rstf);
@@ -105,6 +105,14 @@ int main()
     CHECK_SWAP(a, b);
     CHECK_SWAP(s_rstf, h);
     CHECK_SWAP(s_rstf, s_rstf);
+
+    std::cout << "\nassign\n";
+    #define CHECK_ASSIGN(a, method) \
+        std::cout << '"' << a << "\" to "; \
+        method; \
+        std::cout << '"' << a << "\"\n"
+    CHECK_ASSIGN(h, h.assign(3, 'T'));
+    CHECK_ASSIGN(a, a.assign(6, 'W'));
 
     return 0;
 }

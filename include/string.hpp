@@ -60,7 +60,7 @@ public:
         else
         {
             _init_large();
-            _allocate_current(_size);
+            _allocate_current();
         }
         traits_type::copy(_elements(), string._elements(), _size);
         _eos();
@@ -95,7 +95,7 @@ public:
         else
         {
             _init_large();
-            _allocate_current(_size);
+            _allocate_current();
         }
         traits_type::copy(_elements(), view.data(), _size);
         _eos();
@@ -106,6 +106,8 @@ public:
     {
 
     }
+
+    basic_string(std::nullptr_t) = delete;
 
     constexpr basic_string& operator=(const basic_string& string)
     {
@@ -118,7 +120,7 @@ public:
                 {
                     _allocator = string._allocator;
                     _become_large();
-                    _allocate_current(_size);
+                    _allocate_current();
                 }
                 traits_type::copy(_elements(), string._elements(), _size);
             }
@@ -135,7 +137,7 @@ public:
                 {
                     _deallocate_current();
                     _allocator = string._allocator;
-                    _allocate_current(_size);
+                    _allocate_current();
                 }
                 traits_type::copy(_large_buffer, string._large_buffer, _size);
             }
@@ -198,10 +200,29 @@ public:
         return *this = string_view_type(elements);
     }
 
-    basic_string(std::nullptr_t) = delete;
+    constexpr ~basic_string() noexcept
+    {
+        if (!small())
+            _deallocate_current();
+    }
+
     basic_string& operator=(std::nullptr_t) = delete;
 
-    // TODO: assign
+    constexpr basic_string& assign(size_type count, value_type element)
+    {
+        _size = count;
+        if (_capacity < count)
+        {
+            if (small())
+                _become_large();
+            else
+                _deallocate_current();
+            _allocate_current();
+        }
+        traits_type::assign(_elements(), count, element);
+        _eos();
+        return *this;
+    }
 
 public:
     // Returns a reference to the character at the given index in the string.
@@ -492,7 +513,7 @@ private:
         allocator_traits::deallocate(_allocator, allocation.elements, allocation.capacity + 1);
     }
 
-    constexpr void _allocate_current(size_type element_count)
+    constexpr void _allocate_current()
     {
         auto allocation = _allocate(_size);
         _large_buffer = allocation.elements;
@@ -501,7 +522,7 @@ private:
 
     constexpr _allocation_result _current_allocation() { return { _large_buffer, _capacity }; }
 
-    constexpr void _deallocate_current() { _deallocate(_current_allocation()); }
+    constexpr void _deallocate_current() noexcept { _deallocate(_current_allocation()); }
 
 private:
     // Calculate the number of elements the small buffer can hold.
