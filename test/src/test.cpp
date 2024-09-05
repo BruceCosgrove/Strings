@@ -1,124 +1,197 @@
 #include <gtest/gtest.h>
+#include "string.hpp"
 
-// #include "string.hpp"
-// #include "string_ostream.hpp"
-// #include <iostream>
-// #include <iomanip>
+static constexpr char Small[] = "hello";
+static constexpr std::size_t SmallLength = sizeof(Small) / sizeof(char) - 1;
+static constexpr char Large[] = "hello from large string";
+static constexpr std::size_t LargeLength = sizeof(Large) / sizeof(char) - 1;
 
-// #define DEBUG_DATA(x, spacing, ...) #x ": " spacing __VA_ARGS__ << (x)
+static void TestEmpty(string& s)
+{
+    ASSERT_TRUE(s.small());
+    ASSERT_TRUE(s.empty());
+    ASSERT_EQ(s.size(), 0);
+    ASSERT_EQ(s.ssize(), 0);
+    ASSERT_EQ(s.length(), 0);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin(), s.end());
+    ASSERT_EQ(s.cbegin(), s.cend());
+    ASSERT_EQ(s.rbegin(), s.rend());
+    ASSERT_EQ(s.crbegin(), s.crend());
+    ASSERT_STREQ(s.data(), "");
+}
 
-// #define DEBUG_STRING(string_type, spacing) \
-//     std::cout << DEBUG_DATA(+string_type::sboc, spacing, << std::setw(2)) << ", " \
-//               << DEBUG_DATA(sizeof(string_type), spacing, << std::setw(2)) << ", " \
-//               << DEBUG_DATA(+small_##string_type::sboc, spacing, << std::setw(2)) << ", " \
-//               << DEBUG_DATA(sizeof(small_##string_type), spacing, << std::setw(2)) << std::endl
+TEST(StringConstructors, NoArgumentConstructor) {
+    string s;
+    TestEmpty(s);
+}
 
-// constexpr string_view strview = "hello world...";
-// // Must be local static/global for conversion to string view to work in constexpr. Local non-static doesn't work.
-// constexpr string str(strview);
-// constexpr string_view sv = str;
+TEST(StringConstructors, CopyConstructor_Small) {
+    string s0 = Small;
+    string s = s0;
 
-// int main()
-// {
-//     std::cout << "\nprinting\n";
-//     std::cout << strview << '\n' << str << '\n' << sv << '\n';
+    ASSERT_TRUE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), SmallLength);
+    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.length(), SmallLength);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin() + SmallLength, s.end());
+    ASSERT_EQ(s.cbegin() + SmallLength, s.cend());
+    ASSERT_EQ(s.rbegin() + SmallLength, s.rend());
+    ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
+    ASSERT_STREQ(s.data(), Small);
+}
 
-//     std::cout << "\ncapacity\n";
-//     DEBUG_STRING(string, "   ");
-//     DEBUG_STRING(u8string, " ");
-//     DEBUG_STRING(u16string, "");
-//     DEBUG_STRING(u32string, "");
-//     DEBUG_STRING(wstring, "  ");
+TEST(StringConstructors, CopyConstructor_Large) {
+    string s0 = Large;
+    string s = s0;
 
-//     std::cout << "\ncontructors and operator=\n";
-//     string a;
-//     string b = str;
-//     string c = std::move(b);
-//     string d(strview);
-//     string e = "Goodbye.";
-//     string f = "Alone again... naturallyyyyyyy..";
-//     // string z = nullptr;
-//     a = b;
-//     c = d;
-//     e = std::move(c);
-//     a = strview;
-//     b = "Sideways-|";
-//     c = "supercalifragilisticexpialadocious";
-//     string g = c;
-//     string h = std::move(c);
-//     string i = string(string_view(g));
-//     i = a;
-//     h = g;
-//     g = std::move(h);
-//     g = std::move(i);
-//     // a = nullptr;
-//     string k(10, 'k');
-//     std::cout << k << '\n';
-//     string l(20, 'l');
-//     std::cout << l << '\n';
+    ASSERT_FALSE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), LargeLength);
+    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.length(), LargeLength);
+    ASSERT_GE(s.capacity(), LargeLength);
+    ASSERT_EQ(s.begin() + LargeLength, s.end());
+    ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
+    ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
+    ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
+    ASSERT_STREQ(s.data(), Large);
+}
 
-//     std::cout << "\niterators\n";
-//     int i2 = 0;
-//     for (auto c : g)
-//         { std::cout << c; ++i2; }
-//     std::cout << ' ' << i2 << '\n';
-//     int i3 = 0;
-//     for (auto it = g.crbegin(); it != g.crend(); ++it)
-//         { std::cout << *it; ++i3; }
-//     std::cout << ' ' << i3 << '\n';
+TEST(StringConstructors, MoveConstructor_Small) {
+    string s0 = Small;
+    string s = std::move(s0);
 
-//     std::cout << "\nequality\n";
-//     auto bsv = static_cast<string_view>(b);
-//     auto gsv = static_cast<string_view>(g);
+    ASSERT_TRUE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), SmallLength);
+    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.length(), SmallLength);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin() + SmallLength, s.end());
+    ASSERT_EQ(s.cbegin() + SmallLength, s.cend());
+    ASSERT_EQ(s.rbegin() + SmallLength, s.rend());
+    ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
+    ASSERT_STREQ(s.data(), Small);
 
-//     std::cout << '"' << bsv << "\" " << (bsv == gsv ? "==" : "!=") << " \"" << gsv << "\"\n";
-//     std::cout << '"' << bsv << "\" " << (bsv == bsv ? "==" : "!=") << " \"" << bsv << "\"\n";
+    TestEmpty(s0);
+}
 
-//     std::cout << "\ncopy\n";
-//     char buffer[12] = "where world";
-//     std::cout << buffer << '\n';
-//     auto count = strview.copy(buffer, 4, 12);
-//     std::cout << buffer << '\n';
-//     std::cout << count << " chars copied\n";
+TEST(StringConstructors, MoveConstructor_Large) {
+    string s0 = Large;
+    string s = std::move(s0);
 
-//     std::cout << "\ncompare\n";
-//     std::cout << bsv.compare(gsv) << ' ';
-//     std::cout << bsv.compare("") << '\n';
+    ASSERT_FALSE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), LargeLength);
+    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.length(), LargeLength);
+    ASSERT_GE(s.capacity(), LargeLength);
+    ASSERT_EQ(s.begin() + LargeLength, s.end());
+    ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
+    ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
+    ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
+    ASSERT_STREQ(s.data(), Large);
 
-//     std::cout << "\nreserve and shrink_to_fit\n";
-//     string s_rstf;
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf.reserve(1);
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf.reserve(42);
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf.shrink_to_fit();
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf = "oblong egg time, wow";
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf.reserve(42);
-//     std::cout << s_rstf.capacity() << ' ';
-//     s_rstf.shrink_to_fit();
-//     std::cout << s_rstf.capacity() << '\n';
+    TestEmpty(s0);
+}
 
-//     std::cout << "\nswap\n";
-//     #define CHECK_SWAP(a, b) \
-//         std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << " to\n"; \
-//         a.swap(b); \
-//         std::cout << '"' << a << "\" at " << (void*)a.data() << " and \"" << b << "\" at " << (void*)b.data() << "\n\n"
-//     CHECK_SWAP(s_rstf, s_rstf);
-//     CHECK_SWAP(s_rstf, b);
-//     CHECK_SWAP(a, b);
-//     CHECK_SWAP(s_rstf, h);
-//     CHECK_SWAP(s_rstf, s_rstf);
+TEST(StringConstructors, size_type_value_type_Constructor_Small) {
+    string s(SmallLength, 'Q');
 
-//     std::cout << "\nassign\n";
-//     #define CHECK_ASSIGN(a, method) \
-//         std::cout << '"' << a << "\" to "; \
-//         method; \
-//         std::cout << '"' << a << "\"\n"
-//     CHECK_ASSIGN(h, h.assign(3, 'T'));
-//     CHECK_ASSIGN(a, a.assign(6, 'W'));
+    ASSERT_TRUE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), SmallLength);
+    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.length(), SmallLength);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin() + SmallLength, s.end());
+    ASSERT_EQ(s.cbegin() + SmallLength, s.cend());
+    ASSERT_EQ(s.rbegin() + SmallLength, s.rend());
+    ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
+    ASSERT_STREQ(s.data(), "QQQQQ");
+}
 
-//     return 0;
-// }
+TEST(StringConstructors, size_type_value_type_Constructor_Large) {
+    string s(LargeLength, 'R');
+
+    ASSERT_FALSE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), LargeLength);
+    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.length(), LargeLength);
+    ASSERT_GE(s.capacity(), LargeLength);
+    ASSERT_EQ(s.begin() + LargeLength, s.end());
+    ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
+    ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
+    ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
+    ASSERT_STREQ(s.data(), "RRRRRRRRRRRRRRRRRRRRRRR");
+}
+
+TEST(StringConstructors, string_view_type_Constructor_Small) {
+    string_view sv = Small;
+    string s(sv);
+
+    ASSERT_TRUE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), SmallLength);
+    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.length(), SmallLength);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin() + SmallLength, s.end());
+    ASSERT_EQ(s.cbegin() + SmallLength, s.cend());
+    ASSERT_EQ(s.rbegin() + SmallLength, s.rend());
+    ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
+    ASSERT_STREQ(s.data(), Small);
+}
+
+TEST(StringConstructors, string_view_type_Constructor_Large) {
+    string_view sv = Large;
+    string s(sv);
+
+    ASSERT_FALSE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), LargeLength);
+    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.length(), LargeLength);
+    ASSERT_GE(s.capacity(), LargeLength);
+    ASSERT_EQ(s.begin() + LargeLength, s.end());
+    ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
+    ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
+    ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
+    ASSERT_STREQ(s.data(), Large);
+}
+
+TEST(StringConstructors, const_pointer_Constructor_Small) {
+    string s = Small;
+
+    ASSERT_TRUE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), SmallLength);
+    ASSERT_EQ(s.ssize(), SmallLength);
+    ASSERT_EQ(s.length(), SmallLength);
+    ASSERT_EQ(s.capacity(), string::sboc);
+    ASSERT_EQ(s.begin() + SmallLength, s.end());
+    ASSERT_EQ(s.cbegin() + SmallLength, s.cend());
+    ASSERT_EQ(s.rbegin() + SmallLength, s.rend());
+    ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
+    ASSERT_STREQ(s.data(), Small);
+}
+
+TEST(StringConstructors, const_pointer_Constructor_Large) {
+    string s = Large;
+
+    ASSERT_FALSE(s.small());
+    ASSERT_FALSE(s.empty());
+    ASSERT_EQ(s.size(), LargeLength);
+    ASSERT_EQ(s.ssize(), LargeLength);
+    ASSERT_EQ(s.length(), LargeLength);
+    ASSERT_GE(s.capacity(), LargeLength);
+    ASSERT_EQ(s.begin() + LargeLength, s.end());
+    ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
+    ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
+    ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
+    ASSERT_STREQ(s.data(), Large);
+}
