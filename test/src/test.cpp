@@ -1,3 +1,5 @@
+#include <gtest/gtest.h>
+
 // #include "string.hpp"
 // #include "string_ostream.hpp"
 // #include <iostream>

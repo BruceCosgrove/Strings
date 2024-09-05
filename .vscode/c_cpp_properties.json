@@ -4,7 +4,8 @@
             "name": "Ubuntu",
             "includePath": [
                 "${workspaceFolder}/include/",
-                "${workspaceFolder}/test/src/"
+                "${workspaceFolder}/test/src/",
+                "${workspaceFolder}/test/googletest-1.15.2/googletest/include/"
             ],
             "compilerPath": "/usr/bin/g++-13",
             "cStandard": "c23",
