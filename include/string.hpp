@@ -42,6 +42,8 @@ public:
 
     static_assert(std::is_same_v<value_type, typename traits_type::char_type>, "Traits must have same value type.");
     static_assert(std::is_same_v<value_type, typename allocator_type::value_type>, "Allocator must have same value type.");
+    static_assert(std::is_nothrow_default_constructible_v<allocator_type>, "Allocator must be nothrow default constructible.");
+    static_assert(std::is_empty_v<allocator_type>, "Allocator must be stateless.");
 
 public:
     [[nodiscard]] constexpr basic_string() noexcept
@@ -53,7 +55,6 @@ public:
 
     [[nodiscard]] constexpr basic_string(const basic_string& string)
         : _size(string._size)
-        , _allocator(string._allocator)
     {
         if (_size <= _internal_capacity())
             _init_small();
@@ -66,9 +67,8 @@ public:
         _eos();
     }
 
-    [[nodiscard]] constexpr basic_string(basic_string&& string) noexcept(std::is_nothrow_move_constructible_v<allocator_traits>)
+    [[nodiscard]] constexpr basic_string(basic_string&& string) noexcept
         : _size(string._size)
-        , _allocator(std::move(string._allocator))
     {
         if (_size <= _internal_capacity())
         {
@@ -118,7 +118,6 @@ public:
             {
                 if (!string.small())
                 {
-                    _allocator = string._allocator;
                     _become_large();
                     _allocate_current();
                 }
@@ -127,7 +126,6 @@ public:
             else if (string.small())
             {
                 _deallocate_current();
-                _allocator = string._allocator;
                 _become_small();
                 traits_type::copy(_small_buffer, string._small_buffer, _size);
             }
@@ -136,7 +134,6 @@ public:
                 if (_capacity < _size)
                 {
                     _deallocate_current();
-                    _allocator = string._allocator;
                     _allocate_current();
                 }
                 traits_type::copy(_large_buffer, string._large_buffer, _size);
@@ -153,8 +150,6 @@ public:
             _size = string._size;
             if (!small())
                 _deallocate_current();
-
-            _allocator = std::move(string._allocator);
 
             if (string.small())
             {
@@ -384,8 +379,6 @@ public:
             std::swap(_size, string._size);
             std::swap(_capacity, string._capacity);
         }
-
-        std::swap(_allocator, string._allocator);
     }
 
 public:
