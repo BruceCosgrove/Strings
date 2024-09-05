@@ -42,8 +42,8 @@ public:
     [[nodiscard]] constexpr basic_string_view(const_pointer data, size_type size)
         : _data(data), _size(size) {}
 
-    constexpr basic_string_view(const basic_string_view&) noexcept = default;
-    constexpr basic_string_view(basic_string_view&&) noexcept = default;
+    [[nodiscard]] constexpr basic_string_view(const basic_string_view&) noexcept = default;
+    [[nodiscard]] constexpr basic_string_view(basic_string_view&&) noexcept = default;
     constexpr basic_string_view& operator=(const basic_string_view&) noexcept = default;
     constexpr basic_string_view& operator=(basic_string_view&&) noexcept = default;
     constexpr ~basic_string_view() noexcept = default;
@@ -92,8 +92,7 @@ public:
     { return _size < n ? _retain_empty() : basic_string_view(_data, _size - n); }
 
     // Swaps this view with the given view.
-    constexpr void swap(basic_string_view& view) noexcept
-    { std::swap(*this, view); }
+    constexpr void swap(basic_string_view& view) noexcept { std::swap(*this, view); }
 
 public:
     // Copies a substring from this view to the destination.
