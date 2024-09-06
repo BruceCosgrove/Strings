@@ -1,29 +1,8 @@
-#include <gtest/gtest.h>
-#include "string.hpp"
-
-static constexpr char Small[] = "hello";
-static constexpr std::size_t SmallLength = sizeof(Small) / sizeof(char) - 1;
-static constexpr char Large[] = "hello from large string";
-static constexpr std::size_t LargeLength = sizeof(Large) / sizeof(char) - 1;
-
-static void TestEmpty(string& s)
-{
-    ASSERT_TRUE(s.small());
-    ASSERT_TRUE(s.empty());
-    ASSERT_EQ(s.size(), 0ul);
-    ASSERT_EQ(s.ssize(), 0l);
-    ASSERT_EQ(s.length(), 0ul);
-    ASSERT_EQ(s.capacity(), string::sboc);
-    ASSERT_EQ(s.begin(), s.end());
-    ASSERT_EQ(s.cbegin(), s.cend());
-    ASSERT_EQ(s.rbegin(), s.rend());
-    ASSERT_EQ(s.crbegin(), s.crend());
-    ASSERT_STREQ(s.data(), "");
-}
+#include "common.hpp"
 
 TEST(StringConstructors, NoArgumentConstructor) {
     string s;
-    TestEmpty(s);
+    AssertEmpty(s);
 }
 
 TEST(StringConstructors, CopyConstructor_Small) {
@@ -76,7 +55,7 @@ TEST(StringConstructors, MoveConstructor_Small) {
     ASSERT_EQ(s.crbegin() + SmallLength, s.crend());
     ASSERT_STREQ(s.data(), Small);
 
-    TestEmpty(s0);
+    AssertEmpty(s0);
 }
 
 TEST(StringConstructors, MoveConstructor_Large) {
@@ -95,7 +74,7 @@ TEST(StringConstructors, MoveConstructor_Large) {
     ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
     ASSERT_STREQ(s.data(), Large);
 
-    TestEmpty(s0);
+    AssertEmpty(s0);
 }
 
 TEST(StringConstructors, size_type_value_type_Constructor_Small) {
@@ -127,7 +106,7 @@ TEST(StringConstructors, size_type_value_type_Constructor_Large) {
     ASSERT_EQ(s.cbegin() + LargeLength, s.cend());
     ASSERT_EQ(s.rbegin() + LargeLength, s.rend());
     ASSERT_EQ(s.crbegin() + LargeLength, s.crend());
-    ASSERT_STREQ(s.data(), "RRRRRRRRRRRRRRRRRRRRRRR");
+    ASSERT_STREQ(s.data(), "RRRRRRRRRRRRRRRRRRRRRR");
 }
 
 TEST(StringConstructors, string_view_type_Constructor_Small) {
