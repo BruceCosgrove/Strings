@@ -550,15 +550,19 @@ public: // Must be after _internal_capacity is defined. Thanks C++.
     static constexpr size_type sboc = _internal_capacity();
 
 private:
+    // Remove trailing padding for the union so _size and _capacity are placed in it.
+    #pragma pack(push, 1)
     union
     {
         value_type _small_buffer[_internal_capacity() + 1]; // + 1 for null terminator.
         pointer _large_buffer;
     };
+    #pragma pack(pop)
     size_type _size;
     size_type _capacity;
     [[no_unique_address]] allocator_type _allocator;
-};
+    // The previous pragma push, for some reason, applies to the whole class, this overrides that.
+} __attribute__((aligned(alignof(pointer))));
 
 using string = basic_string<char, std::size_t>;
 using small_string = basic_string<char, std::uint8_t>;
