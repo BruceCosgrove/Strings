@@ -73,19 +73,19 @@ TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallString) {
 }
 
 TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallerLargeString) {
-    string s1(Large1);
-    string s2(Large2);
-    s1 = s2;
-
-    AssertLarge(s1, Large2);
-    AssertLarge(s2, Large2);
-}
-
-TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_LargerLargeString) {
     string s1(Large2);
     string s2(Large1);
     s1 = s2;
 
     AssertLarge(s1, Large1);
     AssertLarge(s2, Large1);
+}
+
+TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_LargerLargeString) {
+    string s1(Large1);
+    string s2(Large2);
+    s1 = s2;
+
+    AssertLarge(s1, Large2);
+    AssertLarge(s2, Large2);
 }
