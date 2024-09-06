@@ -114,29 +114,22 @@ public:
                     _become_large();
                     _allocate_current();
                 }
-                traits_type::copy(_elements(), string._elements(), _size);
             }
-            else if (string.small())
-            {
-                _deallocate_current();
-                _become_small();
-                traits_type::copy(_small_buffer, string._small_buffer, _size);
-            }
-            else
+            else if (!string.small())
             {
                 if (_capacity < _size)
                 {
                     _deallocate_current();
                     _allocate_current();
                 }
-                traits_type::copy(_large_buffer, string._large_buffer, _size);
             }
+            traits_type::copy(_elements(), string._elements(), _size);
             _eos();
         }
         return *this;
     }
 
-    constexpr basic_string& operator=(basic_string&& string)
+    constexpr basic_string& operator=(basic_string&& string) noexcept
     {
         if (this != std::addressof(string))
         {
