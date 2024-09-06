@@ -1,6 +1,6 @@
 #include "common.hpp"
 
-TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_EmptyStringView) {
+TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_EmptyStringView) {
     string s1;
     string_view sv1;
     s1 = sv1;
@@ -8,7 +8,7 @@ TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_EmptyStringView) {
     AssertEmpty(s1);
 }
 
-TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_SmallStringView) {
+TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_SmallStringView) {
     string s1;
     string_view sv1(Small1);
     s1 = sv1;
@@ -16,7 +16,7 @@ TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_SmallStringView) {
     AssertSmall(s1, Small1);
 }
 
-TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_LargeStringView) {
+TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_LargeStringView) {
     string s1;
     string_view sv1(Large1);
     s1 = sv1;
@@ -24,7 +24,7 @@ TEST(StringOtherAssignmentOperators, EmptyString_AssignedWith_LargeStringView) {
     AssertLarge(s1, Large1);
 }
 
-TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_EmptyStringView) {
+TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_EmptyStringView) {
     string s1(Small1);
     string_view sv1;
     s1 = sv1;
@@ -32,7 +32,7 @@ TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_EmptyStringView) {
     AssertEmpty(s1);
 }
 
-TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_SmallStringView) {
+TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_SmallStringView) {
     string s1(Small1);
     string_view sv1(Small2);
     s1 = sv1;
@@ -40,7 +40,7 @@ TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_SmallStringView) {
     AssertSmall(s1, Small2);
 }
 
-TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_LargeStringView) {
+TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_LargeStringView) {
     string s1(Small1);
     string_view sv1(Large1);
     s1 = sv1;
@@ -48,7 +48,7 @@ TEST(StringOtherAssignmentOperators, SmallString_AssignedWith_LargeStringView) {
     AssertLarge(s1, Large1);
 }
 
-TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_EmptyStringView) {
+TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_EmptyStringView) {
     string s1(Large1);
     string_view sv1;
     s1 = sv1;
@@ -56,7 +56,7 @@ TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_EmptyStringView) {
     AssertEmptyLarge(s1, Large1);
 }
 
-TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_SmallStringView) {
+TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallStringView) {
     string s1(Large1);
     string_view sv1(Small1);
     s1 = sv1;
@@ -64,7 +64,7 @@ TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_SmallStringView) {
     AssertLarge(s1, Small1);
 }
 
-TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_SmallerLargeStringView) {
+TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallerLargeStringView) {
     string s1(Large1);
     string_view sv1(Large2);
     s1 = sv1;
@@ -72,7 +72,7 @@ TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_SmallerLargeString
     AssertLarge(s1, Large2);
 }
 
-TEST(StringOtherAssignmentOperators, LargeString_AssignedWith_LargerLargeStringView) {
+TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_LargerLargeStringView) {
     string s1(Large2);
     string_view sv1(Large1);
     s1 = sv1;
