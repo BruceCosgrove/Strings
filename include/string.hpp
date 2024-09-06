@@ -167,11 +167,12 @@ public:
             _size = view.size();
             if (_capacity < _size)
             {
-                auto allocation = _allocate(_size);
-                _capacity = allocation.capacity;
-                // Copy before setting _large_buffer because elements might be in _large_buffer.
-                traits_type::copy(allocation.elements, view.data(), _size);
-                _large_buffer = allocation.elements;
+                if (small())
+                    _become_large();
+                else
+                    _deallocate_current();
+                _allocate_current();
+                traits_type::copy(_large_buffer, view.data(), _size);
             }
             else
                 traits_type::move(_elements(), view.data(), _size);
@@ -179,6 +180,7 @@ public:
         }
         else if (_size > view.size())
         {
+            // view is substr(0, view.size()), so just set the size and null terminator.
             _size = view.size();
             _eos();
         }
