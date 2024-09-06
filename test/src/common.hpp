@@ -10,5 +10,5 @@ constexpr string_view Large2 = "another string of largeness";
 
 void AssertEmpty(const string& s);
 void AssertEmptyLarge(const string& s, string_view expected);
-void AssertSmall(const string& s, string_view expected, bool alsoAssertEquality = true);
-void AssertLarge(const string& s, string_view expected, bool alsoAssertEquality = true);
+void AssertSmall(const string& s, string_view expected);
+void AssertLarge(const string& s, string_view expected);
