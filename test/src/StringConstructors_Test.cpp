@@ -2,6 +2,7 @@
 
 TEST(StringConstructors, NoArgumentConstructed) {
     string s1;
+
     AssertEmpty(s1);
 }
 
