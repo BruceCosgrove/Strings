@@ -10,16 +10,16 @@ TEST(StringConstructors, CopyConstructedWith_SmallString) {
     string s1(Small1);
     string s2 = s1;
 
-    AssertSmall(s1);
-    AssertSmall(s2);
+    AssertSmall(s1, Small1);
+    AssertSmall(s2, Small1);
 }
 
 TEST(StringConstructors, CopyConstructedWith_LargeString) {
     string s1(Large1);
     string s2 = s1;
 
-    AssertLarge(s1);
-    AssertLarge(s2);
+    AssertLarge(s1, Large1);
+    AssertLarge(s2, Large1);
 }
 
 TEST(StringConstructors, MoveConstructedWith_SmallString) {
@@ -27,7 +27,7 @@ TEST(StringConstructors, MoveConstructedWith_SmallString) {
     string s2 = std::move(s1);
 
     AssertEmpty(s1);
-    AssertSmall(s2);
+    AssertSmall(s2, Small1);
 }
 
 TEST(StringConstructors, MoveConstructedWith_LargeString) {
@@ -35,7 +35,7 @@ TEST(StringConstructors, MoveConstructedWith_LargeString) {
     string s2 = std::move(s1);
 
     AssertEmpty(s1);
-    AssertLarge(s2);
+    AssertLarge(s2, Large1);
 }
 
 TEST(StringConstructors, ConstructedWith_size_type_value_type_Small) {
@@ -56,24 +56,24 @@ TEST(StringConstructors, ConstructedWith_string_view_type_Small) {
     string_view sv1(Small1);
     string s1(sv1);
 
-    AssertSmall(s1);
+    AssertSmall(s1, Small1);
 }
 
 TEST(StringConstructors, ConstructedWith_string_view_type_Large) {
     string_view sv1(Large1);
     string s1(sv1);
 
-    AssertLarge(s1);
+    AssertLarge(s1, Large1);
 }
 
 TEST(StringConstructors, ConstructedWith_const_pointer_Small) {
     string s1(Small1);
 
-    AssertSmall(s1);
+    AssertSmall(s1, Small1);
 }
 
 TEST(StringConstructors, ConstructedWith_const_pointer_Large) {
     string s1(Large1);
 
-    AssertLarge(s1);
+    AssertLarge(s1, Large1);
 }

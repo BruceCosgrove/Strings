@@ -9,6 +9,6 @@ constexpr string_view Large1 = "this is a large string";
 constexpr string_view Large2 = "another string of largeness";
 
 void AssertEmpty(const string& s);
-void AssertEmptyLarge(const string& s, string_view expected = Large1);
-void AssertSmall(const string& s, string_view expected = Small1, bool alsoAssertEquality = true);
-void AssertLarge(const string& s, string_view expected = Large1, bool alsoAssertEquality = true);
+void AssertEmptyLarge(const string& s, string_view expected);
+void AssertSmall(const string& s, string_view expected, bool alsoAssertEquality = true);
+void AssertLarge(const string& s, string_view expected, bool alsoAssertEquality = true);

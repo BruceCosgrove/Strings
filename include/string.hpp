@@ -134,21 +134,25 @@ public:
         if (this != std::addressof(string))
         {
             _size = string._size;
-            if (!small())
-                _deallocate_current();
-
-            if (string.small())
+            if (_capacity < string._capacity) // implies !string.small()
             {
-                if (!small())
-                    _become_small();
-                traits_type::copy(_small_buffer, string._small_buffer, _size);
-                _eos();
-            }
-            else
-            {
+                if (small())
+                    _become_large();
+                else
+                    _deallocate_current();
                 _large_buffer = string._large_buffer;
                 _capacity = string._capacity;
                 string._become_small();
+            }
+            else // does not imply anything about string.small()
+            {
+                _eos();
+                traits_type::copy(_elements(), string._elements(), _size);
+                if (!string.small())
+                {
+                    string._deallocate_current();
+                    string._become_small();
+                }
             }
             string._size = 0;
             string._eos();
