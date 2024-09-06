@@ -39,14 +39,14 @@ TEST(StringConstructors, MoveConstructedWith_LargeString) {
 }
 
 TEST(StringConstructors, ConstructedWith_size_type_value_type_Small) {
-    string s1(Small1.size(), 'Q');
+    string s1(5, 'Q');
 
     AssertSmall(s1, Small1, false);
     ASSERT_STREQ(s1.data(), "QQQQQ");
 }
 
 TEST(StringConstructors, ConstructedWith_size_type_value_type_Large) {
-    string s1(Large1.size(), 'R');
+    string s1(22, 'R');
 
     AssertLarge(s1, Large1, false);
     ASSERT_STREQ(s1.data(), "RRRRRRRRRRRRRRRRRRRRRR");
