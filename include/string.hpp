@@ -357,7 +357,7 @@ public:
             }
         }
         else if (string.small())
-            return string.swap(*this); // Use the above case, but reverse the swapping order.
+            string.swap(*this); // Use the above case, but reverse the swapping order.
         else
         {
             std::swap(_large_buffer, string._large_buffer);
