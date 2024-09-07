@@ -1,5 +1,11 @@
 #pragma once
 
+// If you wish to change the default allocator of all strings, define
+// this macro to be your custom allocator before including this file.
+#ifndef STRING_DEFAULT_ALLOCATOR
+#define STRING_DEFAULT_ALLOCATOR std::allocator<_char_t>
+#endif
+
 #include "string_view.hpp"
 #include <algorithm>
 #include <concepts>
@@ -13,7 +19,7 @@ template
     typename _size_t = std::size_t,
     _size_t _min_internal_capacity = 15 / sizeof(_char_t),
     typename _traits_t = std::char_traits<_char_t>,
-    typename _allocator_t = std::allocator<_char_t>
+    typename _allocator_t = STRING_DEFAULT_ALLOCATOR
 >
 class basic_string
 {

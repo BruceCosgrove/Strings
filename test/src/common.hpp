@@ -1,6 +1,8 @@
 #pragma once
 
 #include <gtest/gtest.h>
+#include "allocator_tracker.hpp"
+#define STRING_DEFAULT_ALLOCATOR basic_allocation_tracker<_char_t>
 #include "string.hpp"
 
 constexpr string_view Empty = "";
