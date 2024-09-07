@@ -9,7 +9,7 @@ TEST(StringCopyAssignmentOperators, EmptyString_CopyAssignedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, EmptyString_CopyAssignedWith_SmallString) {
@@ -21,7 +21,7 @@ TEST(StringCopyAssignmentOperators, EmptyString_CopyAssignedWith_SmallString) {
         AssertSmall(s1, Small1);
         AssertSmall(s2, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, EmptyString_CopyAssignedWith_LargeString) {
@@ -33,7 +33,7 @@ TEST(StringCopyAssignmentOperators, EmptyString_CopyAssignedWith_LargeString) {
         AssertLarge(s1, Large1);
         AssertLarge(s2, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_EmptyString) {
@@ -45,7 +45,7 @@ TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_SmallString) {
@@ -57,7 +57,7 @@ TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_SmallString) {
         AssertSmall(s1, Small2);
         AssertSmall(s2, Small2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_LargeString) {
@@ -69,7 +69,7 @@ TEST(StringCopyAssignmentOperators, SmallString_CopyAssignedWith_LargeString) {
         AssertLarge(s1, Large1);
         AssertLarge(s2, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_EmptyString) {
@@ -81,7 +81,7 @@ TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_EmptyString) {
         AssertEmptyLarge(s1, Large1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallString) {
@@ -93,7 +93,7 @@ TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallString) {
         AssertLarge(s1, Small1);
         AssertSmall(s2, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallerLargeString) {
@@ -105,7 +105,7 @@ TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_SmallerLargeStr
         AssertLarge(s1, Large1);
         AssertLarge(s2, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_LargerLargeString) {
@@ -117,5 +117,5 @@ TEST(StringCopyAssignmentOperators, LargeString_CopyAssignedWith_LargerLargeStri
         AssertLarge(s1, Large2);
         AssertLarge(s2, Large2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }

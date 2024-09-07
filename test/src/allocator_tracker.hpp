@@ -23,7 +23,12 @@ public:
         base::deallocate(block, size);
     }
 
-    [[nodiscard]] static bool allocations_match_deallocations() { return _allocationCount == _deallocationCount; }
+    [[nodiscard]] static bool query_and_reset() {
+        bool equal = _allocationCount == _deallocationCount;
+        _allocationCount = 0;
+        _deallocationCount = 0;
+        return equal;
+    }
 
 private:
     static inline std::size_t _allocationCount = 0;

@@ -6,7 +6,7 @@ TEST(StringConstructors, NoArgumentConstructed) {
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, CopyConstructedWith_EmptyString) {
@@ -17,7 +17,7 @@ TEST(StringConstructors, CopyConstructedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, CopyConstructedWith_SmallString) {
@@ -28,7 +28,7 @@ TEST(StringConstructors, CopyConstructedWith_SmallString) {
         AssertSmall(s1, Small1);
         AssertSmall(s2, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, CopyConstructedWith_LargeString) {
@@ -39,7 +39,7 @@ TEST(StringConstructors, CopyConstructedWith_LargeString) {
         AssertLarge(s1, Large1);
         AssertLarge(s2, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, MoveConstructedWith_EmptyString) {
@@ -50,7 +50,7 @@ TEST(StringConstructors, MoveConstructedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, MoveConstructedWith_SmallString) {
@@ -61,7 +61,7 @@ TEST(StringConstructors, MoveConstructedWith_SmallString) {
         AssertEmpty(s1);
         AssertSmall(s2, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, MoveConstructedWith_LargeString) {
@@ -72,7 +72,7 @@ TEST(StringConstructors, MoveConstructedWith_LargeString) {
         AssertEmpty(s1);
         AssertLarge(s2, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_EmptyCountOfSameElement) {
@@ -81,7 +81,7 @@ TEST(StringConstructors, ConstructedWith_EmptyCountOfSameElement) {
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_SmallCountOfSameElement) {
@@ -100,7 +100,7 @@ TEST(StringConstructors, ConstructedWith_SmallCountOfSameElement) {
         ASSERT_EQ(s1.crbegin() + 5, s1.crend());
         ASSERT_STREQ(s1.data(), "QQQQQ");
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_LargeCountOfSameElement) {
@@ -119,7 +119,7 @@ TEST(StringConstructors, ConstructedWith_LargeCountOfSameElement) {
         ASSERT_EQ(s1.crbegin() + 22, s1.crend());
         ASSERT_STREQ(s1.data(), "RRRRRRRRRRRRRRRRRRRRRR");
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_EmptyStringView) {
@@ -129,7 +129,7 @@ TEST(StringConstructors, ConstructedWith_EmptyStringView) {
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_SmallStringView) {
@@ -139,7 +139,7 @@ TEST(StringConstructors, ConstructedWith_SmallStringView) {
 
         AssertSmall(s1, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_LargeStringView) {
@@ -149,7 +149,7 @@ TEST(StringConstructors, ConstructedWith_LargeStringView) {
 
         AssertLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_EmptyConstPointer) {
@@ -158,7 +158,7 @@ TEST(StringConstructors, ConstructedWith_EmptyConstPointer) {
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_SmallConstPointer) {
@@ -167,7 +167,7 @@ TEST(StringConstructors, ConstructedWith_SmallConstPointer) {
 
         AssertSmall(s1, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringConstructors, ConstructedWith_LargeConstPointer) {
@@ -176,5 +176,5 @@ TEST(StringConstructors, ConstructedWith_LargeConstPointer) {
 
         AssertLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }

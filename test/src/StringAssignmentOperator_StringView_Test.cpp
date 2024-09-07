@@ -8,7 +8,7 @@ TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_EmptyStringVi
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_SmallStringView) {
@@ -19,7 +19,7 @@ TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_SmallStringVi
 
         AssertSmall(s1, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_LargeStringView) {
@@ -30,7 +30,7 @@ TEST(StringAssignmentOperator_StringView, EmptyString_AssignedWith_LargeStringVi
 
         AssertLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_EmptyStringView) {
@@ -41,7 +41,7 @@ TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_EmptyStringVi
 
         AssertEmpty(s1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_SmallStringView) {
@@ -52,7 +52,7 @@ TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_SmallStringVi
 
         AssertSmall(s1, Small2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_LargeStringView) {
@@ -63,7 +63,7 @@ TEST(StringAssignmentOperator_StringView, SmallString_AssignedWith_LargeStringVi
 
         AssertLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_EmptyStringView) {
@@ -74,7 +74,7 @@ TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_EmptyStringVi
 
         AssertEmptyLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallStringView) {
@@ -85,7 +85,7 @@ TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallStringVi
 
         AssertLarge(s1, Small1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallerLargeStringView) {
@@ -96,7 +96,7 @@ TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_SmallerLargeS
 
         AssertLarge(s1, Large2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_LargerLargeStringView) {
@@ -107,5 +107,5 @@ TEST(StringAssignmentOperator_StringView, LargeString_AssignedWith_LargerLargeSt
 
         AssertLarge(s1, Large1);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }

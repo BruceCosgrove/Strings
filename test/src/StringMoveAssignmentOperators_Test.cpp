@@ -9,7 +9,7 @@ TEST(StringMoveAssignmentOperators, EmptyString_MoveAssignedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, EmptyString_MoveAssignedWith_SmallString) {
@@ -21,7 +21,7 @@ TEST(StringMoveAssignmentOperators, EmptyString_MoveAssignedWith_SmallString) {
         AssertSmall(s1, Small1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, EmptyString_MoveAssignedWith_LargeString) {
@@ -33,7 +33,7 @@ TEST(StringMoveAssignmentOperators, EmptyString_MoveAssignedWith_LargeString) {
         AssertLarge(s1, Large1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_EmptyString) {
@@ -45,7 +45,7 @@ TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_EmptyString) {
         AssertEmpty(s1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_SmallString) {
@@ -57,7 +57,7 @@ TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_SmallString) {
         AssertSmall(s1, Small2);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_LargeString) {
@@ -69,7 +69,7 @@ TEST(StringMoveAssignmentOperators, SmallString_MoveAssignedWith_LargeString) {
         AssertLarge(s1, Large1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_EmptyString) {
@@ -81,7 +81,7 @@ TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_EmptyString) {
         AssertEmptyLarge(s1, Large1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_SmallString) {
@@ -93,7 +93,7 @@ TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_SmallString) {
         AssertLarge(s1, Small1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_SmallerLargeString) {
@@ -105,7 +105,7 @@ TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_SmallerLargeStr
         AssertLarge(s1, Large1);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
 
 TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_LargerLargeString) {
@@ -117,5 +117,5 @@ TEST(StringMoveAssignmentOperators, LargeString_MoveAssignedWith_LargerLargeStri
         AssertLarge(s1, Large2);
         AssertEmpty(s2);
     }
-    ASSERT_TRUE(allocation_tracker::allocations_match_deallocations());
+    ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
