@@ -306,7 +306,12 @@ public:
     }
 
 public:
-    // TODO: clear
+    // Makes the string empty, but keeps its current allocation, if any.
+    constexpr void clear() noexcept
+    {
+        _size = 0;
+        _eos();
+    }
 
     // TODO: insert
 
