@@ -113,24 +113,13 @@ public:
         if (this != std::addressof(string))
         {
             _size = string._size;
-            if (small())
+            if (_capacity < _size)
             {
-                if (!string.small())
-                {
-                    _become_large();
-                    _allocate_current();
-                }
+                _become_large_or_deallocate();
+                _allocate_current();
             }
-            else if (!string.small())
-            {
-                if (_capacity < _size)
-                {
-                    _deallocate_current();
-                    _allocate_current();
-                }
-            }
-            traits_type::copy(_elements(), string._elements(), _size);
             _eos();
+            traits_type::copy(_elements(), string._elements(), _size);
         }
         return *this;
     }
@@ -140,12 +129,9 @@ public:
         if (this != std::addressof(string))
         {
             _size = string._size;
-            if (_capacity < string._capacity) // implies !string.small()
+            if (_capacity < _size)
             {
-                if (small())
-                    _become_large();
-                else
-                    _deallocate_current();
+                _become_large_or_deallocate();
                 _large_buffer = string._large_buffer;
                 _capacity = string._capacity;
                 string._become_small();
@@ -173,10 +159,7 @@ public:
             _size = view.size();
             if (_capacity < _size)
             {
-                if (small())
-                    _become_large();
-                else
-                    _deallocate_current();
+                _become_large_or_deallocate();
                 _allocate_current();
                 traits_type::copy(_large_buffer, view.data(), _size);
             }
@@ -206,12 +189,9 @@ public:
     constexpr basic_string& assign(size_type count, value_type element)
     {
         _size = count;
-        if (_capacity < count)
+        if (_capacity < _size)
         {
-            if (small())
-                _become_large();
-            else
-                _deallocate_current();
+            _become_large_or_deallocate();
             _allocate_current();
         }
         traits_type::assign(_elements(), count, element);
@@ -481,6 +461,16 @@ private:
             // Start lifetime of small buffer.
             std::construct_at(std::addressof(_small_buffer));
         }
+    }
+
+    // Puts the string in large mode, or if already in
+    // large mode, deallocates the current allocation.
+    constexpr void _become_large_or_deallocate() noexcept
+    {
+        if (small())
+            _become_large();
+        else
+            _deallocate_current();
     }
 
     // Sets the element at _size to the null terminator.
