@@ -86,13 +86,6 @@ public:
         string._eos();
     }
 
-    [[nodiscard]] constexpr basic_string(size_type count, value_type element) noexcept
-        : _size(count)
-    {
-        _init_from_size();
-        traits_type::assign(_elements(), count, element);
-    }
-
     [[nodiscard]] explicit constexpr basic_string(string_view_type view)
         : _size(view.size())
     {
@@ -104,6 +97,13 @@ public:
         : basic_string(string_view_type(elements))
     {
 
+    }
+
+    [[nodiscard]] constexpr basic_string(size_type count, value_type element) noexcept
+        : _size(count)
+    {
+        _init_from_size();
+        traits_type::assign(_elements(), count, element);
     }
 
     basic_string(std::nullptr_t) = delete;
