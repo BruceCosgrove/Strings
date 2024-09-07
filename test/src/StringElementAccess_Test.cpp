@@ -196,6 +196,7 @@ TEST(StringElementAccess, EmptyString_OperatorStringView) {
         string_view sv1 = s1;
 
         ASSERT_STREQ(s1.data(), sv1.data());
+        ASSERT_EQ(s1.size(), sv1.size());
     }
     ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
@@ -206,6 +207,7 @@ TEST(StringElementAccess, SmallString_OperatorStringView) {
         string_view sv1 = s1;
 
         ASSERT_STREQ(s1.data(), sv1.data());
+        ASSERT_EQ(s1.size(), sv1.size());
     }
     ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
@@ -216,6 +218,7 @@ TEST(StringElementAccess, LargeString_OperatorStringView) {
         string_view sv1 = s1;
 
         ASSERT_STREQ(s1.data(), sv1.data());
+        ASSERT_EQ(s1.size(), sv1.size());
     }
     ASSERT_TRUE(allocation_tracker::query_and_reset());
 }
