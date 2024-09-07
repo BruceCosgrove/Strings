@@ -178,13 +178,21 @@ public:
 
     constexpr basic_string& operator=(const_pointer elements) { return *this = string_view_type(elements); }
 
+    basic_string& operator=(std::nullptr_t) = delete;
+
     constexpr ~basic_string() noexcept
     {
         if (!small())
             _deallocate_current();
     }
 
-    basic_string& operator=(std::nullptr_t) = delete;
+    constexpr basic_string& assign(const basic_string& string) { return *this = string; }
+
+    constexpr basic_string& assign(basic_string&& string) noexcept { return *this = std::move(string); }
+
+    constexpr basic_string& assign(string_view_type view) noexcept { return *this = view; }
+
+    constexpr basic_string& assign(const_pointer elements) noexcept { return *this = elements; }
 
     constexpr basic_string& assign(size_type count, value_type element)
     {
