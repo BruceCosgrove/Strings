@@ -218,7 +218,7 @@ public:
     { return 0 <= index && index < _size ? _elements()[index] : nult; }
     // Returns a reference to the character at the given index in the string.
     [[nodiscard]] constexpr reference at(size_type index)
-    { return const_cast<pointer>(const_cast<const basic_string*>(this)->at(index)); }
+    { return const_cast<reference>(const_cast<const basic_string*>(this)->at(index)); }
 
     // Returns a reference to the first character in the string.
     [[nodiscard]] constexpr reference front() { return at(0); }
